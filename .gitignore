@@ -42,11 +42,6 @@ env/
 __pycache__/
 *.pyc
 
-# Generated docs (optional - you may want to commit these)
-# Uncomment if you don't want to track generated documentation
-# docs/universal_context.md
-# docs/project_scope.md
-
 # Development tools (project-specific, not part of template)
 .beads/
 

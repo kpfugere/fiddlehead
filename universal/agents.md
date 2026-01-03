@@ -5,13 +5,11 @@ Your job is to navigate the file structure, create missing artifacts, and compil
 
 ## Initial Setup
 
-**When first setting up the project**, the agent should conduct an interview to gather universal context and populate the `universal/` directory files. Run the interview script:
+**When first setting up the project**, the agent should conduct an interview to gather universal context and populate the `universal/` directory files.
 
-```bash
-./setup.sh
-# or directly:
-./interview/interview_script.sh
-```
+**Trigger**: `universal/` files missing/placeholder OR `meta/project_state.md` shows `initialized: false`
+
+**Process**: Follow `universal/skills/project_init.md` - ask questions in 3-5 question batches
 
 The interview gathers information to create:
 - `universal/00_project_goal.md`
@@ -20,7 +18,11 @@ The interview gathers information to create:
 - `universal/03_writing_guidelines.md`
 - `universal/04_characters.md` (if applicable)
 
-If the `universal/` directory is missing or incomplete, prompt the human to run the setup interview first.
+After gathering answers:
+- Record assumptions/TODOs in `meta/changelog.md`
+- Set `meta/project_state.md` → `initialized: true`
+
+**Don't re-run init interview** unless explicitly requested or project_state shows not initialized.
 
 ## Repo map
 - universal/: stable context for the entire project
