@@ -47,3 +47,6 @@ __pycache__/
 # docs/universal_context.md
 # docs/project_scope.md
 
+# Development tools (project-specific, not part of template)
+.beads/
+

@@ -138,7 +138,6 @@ This is the **final compiled document** that contains:
 - AGENTS.md with workflow instructions
 - Clear documentation hierarchy
 - Context-rich documentation structure
-- Task tracking integration (bd/beads)
 
 ## Implementation Details
 
