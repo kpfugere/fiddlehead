@@ -26,6 +26,12 @@ When making changes to this project, follow these versioning practices:
 - Always use annotated tags (`git tag -a`)
 - Tag the release commit (the one that bumps project.yml + CHANGELOG)
 
+### README Maintenance
+- `README.md` exists at the repo root and describes what the app does, its features, how to build, and the tech stack.
+- When a change adds, removes, or significantly alters a user-facing feature, update the relevant section of README.md.
+- Keep it concise — the README is for someone seeing the project for the first time.
+- Do NOT update the README for internal refactors, bug fixes, or minor tweaks that don't change the feature set.
+
 ### What NOT to Do
 - Never modify `MARKETING_VERSION` or `CURRENT_PROJECT_VERSION` outside of an explicit release/version bump request.
 - Never create a git tag without also updating project.yml and CHANGELOG.md.
