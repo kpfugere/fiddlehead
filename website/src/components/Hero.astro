@@ -1,0 +1,123 @@
+---
+
+---
+
+<section id="hero" class="section-full hero">
+  <div class="hero-content">
+    <div class="hero-icon hero-enter hero-enter-1" role="img" aria-label="Fiddlehead logo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="18 52 92 60" width="80" height="52">
+        <path d="M 18 110 Q 18 78, 64 78 Q 110 78, 110 110" fill="#E0D4BD" stroke="none"/>
+        <ellipse cx="42" cy="72" rx="16" ry="18" fill="#E0D4BD"/>
+        <ellipse cx="86" cy="72" rx="16" ry="18" fill="#E0D4BD"/>
+        <ellipse class="frog-eye-left" cx="42" cy="68" rx="8" ry="9" fill="var(--bg, #18140F)"/>
+        <circle class="frog-pupil-left" cx="44" cy="67" r="4" fill="#E0D4BD"/>
+        <ellipse class="frog-eye-right" cx="86" cy="68" rx="8" ry="9" fill="var(--bg, #18140F)"/>
+        <circle class="frog-pupil-right" cx="88" cy="67" r="4" fill="#E0D4BD"/>
+      </svg>
+    </div>
+    <h1 class="hero-title hero-enter hero-enter-2">fiddlehead</h1>
+    <p class="hero-tagline hero-enter hero-enter-3">
+      the meeting notes your ai<br />agents have been waiting for.
+    </p>
+    <p class="hero-sub hero-enter hero-enter-4">
+      set it and forget it — auto mode listens in the background,<br />
+      captures every meeting, and writes structured notes automatically.
+    </p>
+    <div class="hero-actions hero-enter hero-enter-5">
+      <a href="#download" class="btn-primary">download for macos</a>
+    </div>
+    <p class="hero-meta hero-enter hero-enter-5">macos 14+ · free</p>
+  </div>
+</section>
+
+<style>
+  .hero {
+    text-align: center;
+    padding-bottom: var(--space-2xl);
+  }
+
+  .hero-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  .hero-icon {
+    width: 80px;
+    height: 52px;
+    margin-bottom: var(--space-xl);
+  }
+
+  .hero-icon svg {
+    display: block;
+  }
+
+  /* eye hole transitions for blink */
+  .hero-icon :global(.frog-eye-left),
+  .hero-icon :global(.frog-eye-right) {
+    transition: ry 0.08s ease-in-out;
+  }
+
+  /* pupil transitions for tracking + dilation */
+  .hero-icon :global(.frog-pupil-left),
+  .hero-icon :global(.frog-pupil-right) {
+    transition: transform 0.15s ease-out, r 0.3s ease-out;
+  }
+
+  /* blink state — squash eyes, hide pupils */
+  .hero-icon.frog-blink :global(.frog-eye-left),
+  .hero-icon.frog-blink :global(.frog-eye-right) {
+    ry: 1;
+  }
+  .hero-icon.frog-blink :global(.frog-pupil-left),
+  .hero-icon.frog-blink :global(.frog-pupil-right) {
+    opacity: 0;
+  }
+
+  /* hover pupil dilation */
+  .hero-icon:hover :global(.frog-pupil-left),
+  .hero-icon:hover :global(.frog-pupil-right) {
+    r: 5;
+  }
+
+  .hero-title {
+    font-size: clamp(36px, 7vw, 56px);
+    font-weight: 300;
+    color: var(--text-primary);
+    line-height: 1.1;
+    margin-bottom: var(--space-xl);
+  }
+
+  .hero-tagline {
+    font-size: clamp(18px, 3vw, 28px);
+    font-weight: 500;
+    color: var(--text-primary);
+    line-height: 1.4;
+    margin-bottom: var(--space-lg);
+  }
+
+  .hero-sub {
+    font-size: 16px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    max-width: 600px;
+    margin-bottom: var(--space-xl);
+  }
+
+  .hero-actions {
+    margin-bottom: var(--space-md);
+  }
+
+  .hero-meta {
+    font-size: 13px;
+    color: var(--text-secondary);
+    opacity: 0.6;
+  }
+
+  @media (max-width: 768px) {
+    .hero-sub br {
+      display: none;
+    }
+  }
+</style>

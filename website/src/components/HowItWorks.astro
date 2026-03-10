@@ -1,0 +1,118 @@
+---
+const steps = [
+  {
+    glyph: '○',
+    glyphClass: 'glyph-idle',
+    title: 'capture',
+    description: 'enable auto mode once and never think about it again. voice detection starts and stops recording automatically — mic and system audio, no meeting bots, no browser extensions.',
+  },
+  {
+    glyph: '◎',
+    glyphClass: 'glyph-processing',
+    title: 'transcribe',
+    description: 'openai or assemblyai transcription with speaker diarization. choose your provider, get named speakers and word-level accuracy.',
+  },
+  {
+    glyph: '✓',
+    glyphClass: 'glyph-saved',
+    title: 'structure',
+    description: 'gpt-4o-mini extracts topics, key points, action items with owners, and cleans the transcript. saved as local markdown with rich yaml frontmatter.',
+  },
+];
+---
+
+<section id="how-it-works" class="section">
+  <div class="hiw-header reveal">
+    <h2 class="heading-lg">three steps. zero friction.</h2>
+  </div>
+  <div class="hiw-grid">
+    {steps.map((step, i) => (
+      <div class={`card hiw-card reveal reveal-delay-${i + 1}`}>
+        <span class={`glyph ${step.glyphClass} hiw-glyph`}>{step.glyph}</span>
+        <h3 class="heading-md hiw-title">{step.title}</h3>
+        <p class="hiw-desc">{step.description}</p>
+      </div>
+    ))}
+  </div>
+
+  <div class="hiw-features reveal reveal-delay-3">
+    <div class="hiw-feature">
+      <span class="glyph glyph-processing">◎</span>
+      <span>always listening — auto mode uses voice activity detection so you never miss a meeting</span>
+    </div>
+    <div class="hiw-feature">
+      <span class="glyph glyph-saved">✓</span>
+      <span>calendar-aware — detects upcoming meetings and prompts you before they start</span>
+    </div>
+    <div class="hiw-feature">
+      <span class="glyph glyph-idle">●</span>
+      <span>background processing — transcription and structuring happen without blocking the ui</span>
+    </div>
+    <div class="hiw-feature">
+      <span class="glyph glyph-processing">◎</span>
+      <span>provider choice — switch between openai and assemblyai in settings</span>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hiw-header {
+    text-align: center;
+    margin-bottom: var(--space-2xl);
+  }
+
+  .hiw-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-lg);
+  }
+
+  .hiw-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .hiw-glyph {
+    font-size: 28px;
+  }
+
+  .hiw-desc {
+    font-size: 16px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  .hiw-features {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-md) var(--space-xl);
+    margin-top: var(--space-2xl);
+    max-width: 720px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hiw-feature {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  .hiw-feature .glyph {
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 768px) {
+    .hiw-grid {
+      grid-template-columns: 1fr;
+    }
+    .hiw-features {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

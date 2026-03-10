@@ -1,0 +1,213 @@
+---
+
+---
+
+<section id="comparison" class="section">
+  <div class="comp-header reveal">
+    <h2 class="heading-lg">what other tools give you vs. what your agents need.</h2>
+    <p class="subhead comp-sub">
+      most transcription tools give you a wall of text.
+      fiddlehead gives you structured, machine-readable notes.
+    </p>
+  </div>
+
+  <div class="comp-grid reveal reveal-delay-1">
+    <div class="comp-panel comp-other">
+      <div class="comp-panel-header">
+        <span class="comp-label">other tools</span>
+      </div>
+      <pre class="comp-code preserve-case"><code><span class="co-dim">no frontmatter or metadata</span>
+
+<span class="co-h1"># Meeting Notes</span>
+
+<span class="co-speaker">Me:</span> where are we on the migration?
+
+<span class="co-speaker">Them:</span> it's about ninety percent done.
+the auth endpoints are all migrated.
+
+<span class="co-speaker">Me:</span> what about the redesign?
+
+<span class="co-speaker">Them:</span> review got pushed to thursday.
+i'll share mockups by wednesday.
+
+<span class="co-speaker">Me:</span> any blockers?
+
+<span class="co-speaker">Them:</span> just the onboarding docs.
+they're outdated with tooling changes.
+
+<span class="co-dim">no summary, no topics, no action items.</span>
+<span class="co-dim">just a flat transcript.</span></code></pre>
+    </div>
+
+    <div class="comp-panel comp-fiddlehead">
+      <div class="comp-panel-header">
+        <span class="comp-label comp-label-accent">fiddlehead</span>
+      </div>
+      <pre class="comp-code preserve-case"><code><span class="cf-fm">---
+date: 2026-02-10
+duration: 23m
+speakers: 3
+speaker_names: Kyle, Sarah, Marcus
+tags: api-migration, redesign
+topics: API Migration, Dashboard Redesign
+meeting: Standup Sync
+attendees: Kyle Fugere, Sarah Chen, Marcus Rivera
+---</span>
+
+<span class="cf-h1"># Standup Sync</span>
+
+<span class="cf-h2">## Session Summary</span>
+API migration nearly complete with Friday
+deploy target. Dashboard review Thursday.
+
+<span class="cf-h2">## Topics</span>
+
+<span class="cf-h3">### API Migration</span>
+Auth endpoints migrated. Billing webhooks
+are the remaining work.
+
+<span class="cf-h4">#### Action Items</span>
+<span class="cf-check">- [ ]</span> <span class="cf-mention">@kyle</span> finish endpoint tests by Thu
+<span class="cf-check">- [ ]</span> <span class="cf-mention">@sarah</span> run SDK tests against new endpoints
+
+<span class="cf-h2">## Transcript</span>
+<span class="cf-speaker">**Kyle:**</span> where are we on the migration?
+<span class="cf-speaker">**Marcus:**</span> v3 is about ninety percent...</code></pre>
+    </div>
+  </div>
+
+  <div class="comp-callouts reveal reveal-delay-2">
+    <div class="comp-callout">
+      <span class="glyph glyph-saved">✓</span>
+      <span><strong>named speakers</strong> — real names, not "Me" and "Them"</span>
+    </div>
+    <div class="comp-callout">
+      <span class="glyph glyph-saved">✓</span>
+      <span><strong>rich metadata</strong> — yaml frontmatter your agents can parse</span>
+    </div>
+    <div class="comp-callout">
+      <span class="glyph glyph-saved">✓</span>
+      <span><strong>organized by topic</strong> — not just a chronological dump</span>
+    </div>
+    <div class="comp-callout">
+      <span class="glyph glyph-saved">✓</span>
+      <span><strong>action items with owners</strong> — extracted and assigned, not buried in text</span>
+    </div>
+  </div>
+</section>
+
+<style>
+  .comp-header {
+    text-align: center;
+    margin-bottom: var(--space-2xl);
+  }
+
+  .comp-sub {
+    margin: var(--space-lg) auto 0;
+  }
+
+  .comp-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-lg);
+    margin-bottom: var(--space-xl);
+  }
+
+  .comp-panel {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+
+  .comp-panel-header {
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .comp-label {
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    opacity: 0.6;
+  }
+
+  .comp-label-accent {
+    color: var(--accent);
+    opacity: 1;
+  }
+
+  .comp-code {
+    padding: var(--space-xl);
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--text-secondary);
+    overflow-x: auto;
+    background: var(--code-bg);
+    margin: 0;
+  }
+  .comp-code code {
+    font-family: inherit;
+  }
+
+  .comp-other {
+    opacity: 0.7;
+  }
+
+  /* "other tools" syntax */
+  :global(.co-dim) { color: var(--text-secondary); opacity: 0.35; font-style: italic; }
+  :global(.co-h1) { color: var(--text-primary); font-weight: 500; opacity: 0.7; }
+  :global(.co-speaker) { color: var(--text-secondary); opacity: 0.6; }
+
+  /* fiddlehead syntax */
+  :global(.cf-fm) { color: var(--text-secondary); opacity: 0.5; }
+  :global(.cf-h1) { color: var(--text-primary); font-weight: 700; }
+  :global(.cf-h2) { color: var(--text-primary); font-weight: 500; }
+  :global(.cf-h3) { color: var(--text-primary); font-weight: 500; }
+  :global(.cf-h4) { color: var(--text-secondary); font-weight: 500; opacity: 0.8; }
+  :global(.cf-check) { color: var(--accent); }
+  :global(.cf-mention) { color: var(--accent); }
+  :global(.cf-speaker) { color: var(--text-primary); }
+
+  /* callouts */
+  .comp-callouts {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-md) var(--space-xl);
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  .comp-callout {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  .comp-callout .glyph {
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .comp-callout strong {
+    color: var(--text-primary);
+    font-weight: 500;
+  }
+
+  @media (max-width: 768px) {
+    .comp-grid {
+      grid-template-columns: 1fr;
+    }
+    .comp-callouts {
+      grid-template-columns: 1fr;
+    }
+    .comp-code {
+      padding: var(--space-lg);
+      font-size: 11px;
+    }
+  }
+</style>

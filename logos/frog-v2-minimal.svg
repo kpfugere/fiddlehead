@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <rect width="128" height="128" rx="28" fill="#111111"/>
+  <!-- Simplified - just head and eyes, no mouth/nostrils -->
+  <!-- Head as a wide rounded shape -->
+  <path d="M 30 72 Q 30 56, 44 52 Q 50 44, 44 36 Q 38 26, 48 24 Q 56 22, 56 32 Q 56 42, 64 46 Q 72 42, 72 32 Q 72 22, 80 24 Q 90 26, 84 36 Q 78 44, 84 52 Q 98 56, 98 72 Q 98 94, 64 94 Q 30 94, 30 72 Z"
+        fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linejoin="round"/>
+  <!-- Left eye -->
+  <circle cx="48" cy="68" r="8" fill="#FFFFFF"/>
+  <!-- Right eye -->
+  <circle cx="80" cy="68" r="8" fill="#FFFFFF"/>
+</svg>

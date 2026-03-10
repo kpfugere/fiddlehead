@@ -1,0 +1,180 @@
+---
+
+---
+
+<section id="demo" class="section-full">
+  <div class="terminal-wrapper reveal">
+    <div class="terminal">
+      <div class="terminal-chrome">
+        <span class="terminal-dot"></span>
+        <span class="terminal-dot"></span>
+        <span class="terminal-dot"></span>
+        <span class="terminal-title">fiddlehead</span>
+      </div>
+      <div class="terminal-body">
+        <div id="terminal-lines" class="terminal-lines">
+          <!-- lines injected by JS -->
+        </div>
+      </div>
+    </div>
+
+    <div id="terminal-output" class="terminal-output" style="display: none;">
+      <div class="output-file">
+        <div class="output-header">
+          <span class="label">2026-02-10_standup-sync.md</span>
+        </div>
+        <pre class="output-code preserve-case"><code>---
+date: 2026-02-10
+duration: 23m
+speakers: 3
+speaker_names: Kyle, Sarah, Marcus
+tags: api-migration, dashboard-redesign
+topics: API v3 Migration, Dashboard Redesign
+meeting: Standup Sync
+source: openai
+---
+
+# Standup Sync
+
+## Session Summary
+API migration nearly complete with Friday deploy
+target. Dashboard review shifted to Thursday.
+
+## Topics
+
+### API v3 Migration
+Auth endpoints fully migrated. Billing webhooks
+are the remaining work.
+
+#### Action Items
+- [ ] @kyle finish v3 endpoint tests by Thursday
+- [ ] @sarah run client SDK tests against new endpoints
+
+### Dashboard Redesign
+Design review moved to Thursday. Updated mockups
+will be shared async first.
+
+## Transcript
+**Kyle:** alright let's keep this quick...
+**Marcus:** v3 is about ninety percent done...</code></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="../scripts/terminal-animation.js"></script>
+
+<style>
+  .terminal-wrapper {
+    width: 100%;
+    max-width: 720px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+  }
+
+  .terminal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+
+  .terminal-chrome {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .terminal-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--border-strong);
+  }
+
+  .terminal-title {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-left: 8px;
+    opacity: 0.6;
+  }
+
+  .terminal-body {
+    padding: var(--space-xl);
+    min-height: 180px;
+  }
+
+  .terminal-lines {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  :global(.term-line) {
+    color: var(--text-secondary);
+    white-space: pre;
+  }
+
+  :global(.term-prompt) {
+    color: var(--text-secondary);
+    opacity: 0.5;
+  }
+
+  :global(.term-listening) {
+    color: var(--accent);
+  }
+
+  :global(.term-processing) {
+    color: var(--accent);
+  }
+
+  :global(.term-saved) {
+    color: var(--saved);
+  }
+
+  /* output preview below terminal */
+
+  .terminal-output {
+    animation: fade-in-up 0.6s ease-out both;
+  }
+
+  .output-file {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+
+  .output-header {
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .output-code {
+    padding: var(--space-xl);
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--text-secondary);
+    overflow-x: auto;
+    background: var(--code-bg);
+    margin: 0;
+  }
+  .output-code code {
+    font-family: inherit;
+  }
+
+  @media (max-width: 768px) {
+    .terminal-body {
+      padding: var(--space-lg);
+    }
+    .output-code {
+      padding: var(--space-lg);
+      font-size: 12px;
+    }
+  }
+</style>

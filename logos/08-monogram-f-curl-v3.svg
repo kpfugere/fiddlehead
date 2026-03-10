@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <rect width="128" height="128" rx="28" fill="#111111"/>
+  <!-- Vertical stem -->
+  <path d="M 42 108 L 42 28" fill="none" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round"/>
+  <!-- Top large fiddlehead curl -->
+  <path d="M 42 28 C 52 26, 68 24, 80 30 C 92 36, 96 50, 88 58 C 80 66, 68 64, 64 56 C 60 48, 66 42, 72 42 C 78 42, 80 48, 76 50"
+        fill="none" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="76" cy="50" r="3.5" fill="#FFFFFF"/>
+  <!-- Smaller curl below - the F crossbar -->
+  <path d="M 42 64 C 50 62, 60 60, 68 64 C 76 68, 76 78, 70 80 C 64 82, 60 76, 64 72 C 67 69, 70 72, 68 74"
+        fill="none" stroke="#FFFFFF" stroke-width="7" stroke-linecap="round"/>
+  <circle cx="68" cy="74" r="3" fill="#FFFFFF"/>
+</svg>

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <rect width="128" height="128" rx="28" fill="#111111"/>
+  <!-- Frog peeking from bottom edge - solid filled style -->
+  <!-- Head dome rising from bottom -->
+  <path d="M 18 110 Q 18 78, 64 78 Q 110 78, 110 110" fill="#FFFFFF" stroke="none"/>
+  <!-- Left eye bulge - solid -->
+  <ellipse cx="42" cy="72" rx="16" ry="18" fill="#FFFFFF"/>
+  <!-- Right eye bulge - solid -->
+  <ellipse cx="86" cy="72" rx="16" ry="18" fill="#FFFFFF"/>
+  <!-- Left eye hole -->
+  <ellipse cx="42" cy="68" rx="8" ry="9" fill="#111111"/>
+  <!-- Left pupil -->
+  <circle cx="44" cy="67" r="4" fill="#FFFFFF"/>
+  <!-- Right eye hole -->
+  <ellipse cx="86" cy="68" rx="8" ry="9" fill="#111111"/>
+  <!-- Right pupil -->
+  <circle cx="88" cy="67" r="4" fill="#FFFFFF"/>
+</svg>

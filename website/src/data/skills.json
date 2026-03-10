@@ -1,0 +1,37 @@
+[
+  {
+    "slug": "meeting-follow-up",
+    "icon": "✉",
+    "name": "meeting follow-up drafter",
+    "description": "generates follow-up emails from your action items and key decisions.",
+    "file": "/skills/meeting-follow-up.md"
+  },
+  {
+    "slug": "linear-issue-creator",
+    "icon": "▦",
+    "name": "linear issue creator",
+    "description": "turns action items into structured linear issues with descriptions and acceptance criteria.",
+    "file": "/skills/linear-issue-creator.md"
+  },
+  {
+    "slug": "decision-log",
+    "icon": "◈",
+    "name": "decision log",
+    "description": "extracts decisions across meetings into a running log with context and date.",
+    "file": "/skills/decision-log.md"
+  },
+  {
+    "slug": "meeting-prep",
+    "icon": "◉",
+    "name": "meeting prep",
+    "description": "reviews past meetings with a contact to prepare you for the next one.",
+    "file": "/skills/meeting-prep.md"
+  },
+  {
+    "slug": "weekly-summary",
+    "icon": "▤",
+    "name": "weekly summary",
+    "description": "aggregates a week of meetings into a single digest with themes and open items.",
+    "file": "/skills/weekly-summary.md"
+  }
+]

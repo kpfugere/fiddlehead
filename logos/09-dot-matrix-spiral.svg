@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <linearGradient id="g9" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#27AE60"/>
+      <stop offset="100%" stop-color="#16A085"/>
+    </linearGradient>
+  </defs>
+  <circle cx="64" cy="64" r="60" fill="#FEFEFE"/>
+  <!-- Dots along a fiddlehead spiral path - dense at center, spreading out -->
+  <!-- Core (tightest) -->
+  <circle cx="64" cy="56" r="3.5" fill="#16A085"/>
+  <circle cx="60" cy="52" r="3.5" fill="#1ABC9C"/>
+  <circle cx="58" cy="58" r="3.3" fill="#1ABC9C"/>
+  <circle cx="62" cy="62" r="3.3" fill="#27AE60"/>
+  <circle cx="68" cy="60" r="3.2" fill="#27AE60"/>
+  <!-- Middle ring -->
+  <circle cx="70" cy="52" r="3" fill="#2ECC71"/>
+  <circle cx="68" cy="44" r="3" fill="#2ECC71"/>
+  <circle cx="60" cy="40" r="2.8" fill="#2ECC71"/>
+  <circle cx="52" cy="44" r="2.8" fill="#27AE60"/>
+  <circle cx="48" cy="52" r="2.6" fill="#27AE60"/>
+  <circle cx="48" cy="62" r="2.6" fill="#1ABC9C"/>
+  <circle cx="52" cy="70" r="2.5" fill="#1ABC9C"/>
+  <!-- Outer ring - dots spread apart -->
+  <circle cx="62" cy="74" r="2.3" fill="#16A085" opacity="0.85"/>
+  <circle cx="74" cy="72" r="2.1" fill="#16A085" opacity="0.75"/>
+  <circle cx="82" cy="64" r="2" fill="#27AE60" opacity="0.65"/>
+  <circle cx="84" cy="52" r="1.8" fill="#27AE60" opacity="0.55"/>
+  <circle cx="80" cy="40" r="1.6" fill="#2ECC71" opacity="0.45"/>
+  <circle cx="72" cy="32" r="1.5" fill="#2ECC71" opacity="0.38"/>
+  <!-- Outermost - very spread, fading -->
+  <circle cx="60" cy="28" r="1.3" fill="#1ABC9C" opacity="0.3"/>
+  <circle cx="46" cy="30" r="1.2" fill="#1ABC9C" opacity="0.25"/>
+  <circle cx="36" cy="40" r="1.1" fill="#16A085" opacity="0.2"/>
+  <circle cx="32" cy="54" r="1" fill="#16A085" opacity="0.15"/>
+  <circle cx="34" cy="70" r="0.9" fill="#27AE60" opacity="0.12"/>
+  <circle cx="42" cy="82" r="0.8" fill="#27AE60" opacity="0.1"/>
+</svg>

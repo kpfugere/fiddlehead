@@ -1,0 +1,169 @@
+---
+
+---
+
+<section id="agent-native" class="section">
+  <div class="agent-header reveal">
+    <h2 class="heading-lg">built for ai agents, not just humans.</h2>
+    <p class="subhead agent-sub">
+      your meeting notes live on your filesystem as plain markdown.
+      any ai agent with file access can read, search, and act on them.
+    </p>
+  </div>
+
+  <div class="agent-split">
+    <div class="agent-conversation reveal reveal-delay-1">
+      <div class="agent-terminal">
+        <div class="terminal-chrome">
+          <span class="terminal-dot"></span>
+          <span class="terminal-dot"></span>
+          <span class="terminal-dot"></span>
+          <span class="terminal-title">claude code</span>
+        </div>
+        <div class="agent-chat preserve-case">
+          <div class="chat-msg chat-human">
+            <span class="chat-role">You</span>
+            <p>What did we decide about the API migration timeline in today's standup?</p>
+          </div>
+          <div class="chat-msg chat-agent">
+            <span class="chat-role">Claude</span>
+            <p>Reading <strong>2026-02-10_standup-sync.md</strong> — found the "API v3 Migration" topic...</p>
+            <p>Marcus reported the migration is <strong>90% complete</strong> — auth endpoints are fully migrated, billing webhooks are the remaining work. <strong>Friday deploy target</strong>.</p>
+            <p>Two open action items: Kyle has endpoint tests by Thursday, Sarah has SDK tests.</p>
+          </div>
+          <div class="chat-msg chat-human">
+            <span class="chat-role">You</span>
+            <p>Draft a follow-up email to the team with those deadlines.</p>
+          </div>
+          <div class="chat-msg chat-agent">
+            <span class="chat-role">Claude</span>
+            <p>Done. I've drafted the email in your ~/drafts folder with the migration deadlines and action items from the standup.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="agent-explain reveal reveal-delay-2">
+      <div class="agent-point">
+        <span class="glyph glyph-saved">✓</span>
+        <div>
+          <h3 class="heading-md">files, not apis</h3>
+          <p>notes save to ~/Documents as markdown. no proprietary format, no cloud sync, no sdk required.</p>
+        </div>
+      </div>
+      <div class="agent-point">
+        <span class="glyph glyph-processing">◎</span>
+        <div>
+          <h3 class="heading-md">any agent reads them</h3>
+          <p>claude code, cowork, chatgpt, gemini — if it can read files, it can use your meeting notes.</p>
+        </div>
+      </div>
+      <div class="agent-point">
+        <span class="glyph glyph-idle">●</span>
+        <div>
+          <h3 class="heading-md">structured for machines</h3>
+          <p>yaml frontmatter with topics, speakers, tags. action items with owners. grep-friendly, llm-ready.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .agent-header {
+    text-align: center;
+    margin-bottom: var(--space-2xl);
+  }
+
+  .agent-sub {
+    margin: var(--space-lg) auto 0;
+  }
+
+  .agent-split {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: var(--space-xl);
+    align-items: start;
+  }
+
+  /* conversation */
+
+  .agent-terminal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+
+  .agent-chat {
+    padding: var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+  }
+
+  .chat-msg {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .chat-role {
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .chat-human .chat-role { color: var(--text-secondary); }
+  .chat-agent .chat-role { color: var(--accent); }
+
+  .chat-msg p {
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--text-secondary);
+  }
+
+  .chat-agent p {
+    color: var(--text-primary);
+    opacity: 0.85;
+  }
+
+  .chat-msg strong {
+    color: var(--text-primary);
+    font-weight: 500;
+  }
+
+  /* explanation */
+
+  .agent-explain {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+  }
+
+  .agent-point {
+    display: flex;
+    gap: var(--space-md);
+    align-items: flex-start;
+  }
+
+  .agent-point .glyph {
+    font-size: 20px;
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+
+  .agent-point p {
+    font-size: 16px;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    margin-top: 4px;
+  }
+
+  @media (max-width: 768px) {
+    .agent-split {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

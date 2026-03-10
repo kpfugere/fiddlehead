@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 18 18">
+  <!-- Fiddlehead fern spiral - menu bar template icon -->
+  <path d="
+    M 9 16
+    C 9 16, 7.5 14, 7.5 11
+    C 7.5 8.5, 8.5 7, 9.5 6
+    C 10.5 5, 12 4.5, 12.5 5.5
+    C 13 6.5, 12 7.5, 11 7.5
+    C 10 7.5, 9.5 7, 9.5 6.5
+  " fill="none" stroke="black" stroke-width="1.6" stroke-linecap="round"/>
+  <!-- stem -->
+  <line x1="9" y1="16" x2="9" y2="14.5" stroke="black" stroke-width="1.6" stroke-linecap="round"/>
+</svg>

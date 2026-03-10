@@ -1,0 +1,162 @@
+---
+
+---
+
+<section id="setup" class="section">
+  <div class="setup-header reveal">
+    <h2 class="heading-lg">bring your own keys. keep your data.</h2>
+  </div>
+
+  <div class="setup-grid">
+    <div class="card setup-card reveal reveal-delay-1">
+      <div class="setup-card-header">
+        <span class="setup-step">1</span>
+        <h3 class="heading-md">openai</h3>
+      </div>
+      <p class="setup-desc">powers both transcription (gpt-4o-transcribe) and structuring (gpt-4o-mini).</p>
+      <ol class="setup-steps">
+        <li>create an account at <a href="https://platform.openai.com/signup" target="_blank" rel="noopener">platform.openai.com</a></li>
+        <li>go to <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener">api keys</a> and create a new secret key</li>
+        <li>add a payment method under <a href="https://platform.openai.com/settings/organization/billing" target="_blank" rel="noopener">billing</a> (pay-as-you-go)</li>
+        <li>paste the key into fiddlehead preferences</li>
+      </ol>
+      <p class="setup-note">cost: ~$0.006/min transcription + ~$0.001 per meeting structuring.</p>
+    </div>
+
+    <div class="card setup-card reveal reveal-delay-2">
+      <div class="setup-card-header">
+        <span class="setup-step">2</span>
+        <h3 class="heading-md">assemblyai <span class="setup-optional">optional</span></h3>
+      </div>
+      <p class="setup-desc">alternative transcription provider. switch between openai and assemblyai in settings.</p>
+      <ol class="setup-steps">
+        <li>create an account at <a href="https://www.assemblyai.com/app/signup" target="_blank" rel="noopener">assemblyai.com</a></li>
+        <li>copy your api key from the <a href="https://www.assemblyai.com/app/account" target="_blank" rel="noopener">account dashboard</a></li>
+        <li>paste it into fiddlehead preferences</li>
+      </ol>
+      <p class="setup-note">cost: ~$0.003/min. half the price of openai transcription.</p>
+    </div>
+  </div>
+
+  <div class="setup-privacy reveal reveal-delay-3">
+    <span class="glyph glyph-saved">✓</span>
+    <p>
+      your api keys are stored locally in macos keychain.
+      audio goes directly to openai or assemblyai.
+      <strong>there are no fiddlehead servers.</strong>
+    </p>
+  </div>
+</section>
+
+<style>
+  .setup-header {
+    text-align: center;
+    margin-bottom: var(--space-2xl);
+  }
+
+  .setup-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-lg);
+    margin-bottom: var(--space-xl);
+  }
+
+  .setup-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .setup-card-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+  }
+
+  .setup-step {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: var(--bg);
+    font-size: 14px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .setup-desc {
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .setup-steps {
+    list-style: none;
+    counter-reset: step;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 0;
+  }
+
+  .setup-steps li {
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    padding-left: 20px;
+    position: relative;
+  }
+  .setup-steps li::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    opacity: 0.5;
+  }
+
+  .setup-note {
+    font-size: 14px;
+    color: var(--text-secondary);
+    opacity: 0.6;
+    margin-top: auto;
+  }
+
+  .setup-privacy {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-md);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: var(--space-xl);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .setup-privacy p {
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.65;
+  }
+  .setup-privacy strong {
+    color: var(--text-primary);
+  }
+
+  .setup-optional {
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    opacity: 0.5;
+    margin-left: 4px;
+  }
+
+  @media (max-width: 768px) {
+    .setup-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

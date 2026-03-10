@@ -1,0 +1,80 @@
+---
+import SkillCard from './SkillCard.astro';
+import skills from '../data/skills.json';
+---
+
+<section id="skills" class="section">
+  <div class="skills-header reveal">
+    <h2 class="heading-lg">skills: teach your agents new tricks.</h2>
+    <p class="subhead skills-sub">
+      drop a skill.md file in your notes folder and your ai agent knows what to do.
+      download a starter skill or write your own.
+    </p>
+  </div>
+
+  <div class="skills-grid">
+    {skills.map((skill, i) => (
+      <div class={`reveal reveal-delay-${Math.min(i + 1, 5)}`}>
+        <SkillCard
+          icon={skill.icon}
+          name={skill.name}
+          description={skill.description}
+          file={skill.file}
+        />
+      </div>
+    ))}
+    <div class="reveal reveal-delay-5">
+      <div class="card skill-card skill-cta">
+        <span class="skill-icon">▸</span>
+        <h3 class="heading-md">write your own</h3>
+        <p class="skill-desc">
+          skills are just markdown files with yaml frontmatter.
+          any instructions your agent can follow.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .skills-header {
+    text-align: center;
+    margin-bottom: var(--space-2xl);
+  }
+
+  .skills-sub {
+    margin: var(--space-lg) auto 0;
+  }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-lg);
+  }
+
+  .skill-cta {
+    border-style: dashed;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+  .skill-cta .skill-icon {
+    font-size: 20px;
+    color: var(--text-secondary);
+  }
+  .skill-cta:hover .skill-icon {
+    color: var(--accent);
+  }
+
+  @media (max-width: 768px) {
+    .skills-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (min-width: 769px) and (max-width: 1024px) {
+    .skills-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+</style>

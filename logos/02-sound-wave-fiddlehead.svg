@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <linearGradient id="g2" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1DB954"/>
+      <stop offset="100%" stop-color="#0E7A3A"/>
+    </linearGradient>
+  </defs>
+  <circle cx="64" cy="64" r="60" fill="#1A1A2E"/>
+  <!-- Fiddlehead spiral that unfurls into waveform -->
+  <path d="M 30 64 C 30 64, 28 40, 45 35 C 58 31, 65 40, 65 48 C 65 55, 59 59, 54 59 C 50 59, 47 56, 48 53 C 49 50, 52 49, 54 50"
+        fill="none" stroke="url(#g2)" stroke-width="5" stroke-linecap="round"/>
+  <!-- Waveform emerging -->
+  <line x1="54" y1="50" x2="62" y2="50" stroke="#1DB954" stroke-width="4" stroke-linecap="round"/>
+  <line x1="66" y1="38" x2="66" y2="62" stroke="#1DB954" stroke-width="4" stroke-linecap="round"/>
+  <line x1="74" y1="44" x2="74" y2="56" stroke="#1DB954" stroke-width="4" stroke-linecap="round"/>
+  <line x1="82" y1="34" x2="82" y2="66" stroke="#1DB954" stroke-width="4" stroke-linecap="round"/>
+  <line x1="90" y1="42" x2="90" y2="58" stroke="#1DB954" stroke-width="4" stroke-linecap="round"/>
+  <line x1="98" y1="46" x2="98" y2="54" stroke="#1DB954" stroke-width="4" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#18140F"/>
+
+  <!-- frog icon -->
+  <g transform="translate(536, 140) scale(0.625)">
+    <rect width="128" height="128" rx="28" fill="#211C17"/>
+    <path d="M 18 110 Q 18 78, 64 78 Q 110 78, 110 110" fill="#E0D4BD" stroke="none"/>
+    <ellipse cx="42" cy="72" rx="16" ry="18" fill="#E0D4BD"/>
+    <ellipse cx="86" cy="72" rx="16" ry="18" fill="#E0D4BD"/>
+    <ellipse cx="42" cy="68" rx="8" ry="9" fill="#211C17"/>
+    <circle cx="44" cy="67" r="4" fill="#E0D4BD"/>
+    <ellipse cx="86" cy="68" rx="8" ry="9" fill="#211C17"/>
+    <circle cx="88" cy="67" r="4" fill="#E0D4BD"/>
+  </g>
+
+  <!-- title -->
+  <text x="600" y="310" text-anchor="middle" fill="#E0D4BD"
+    font-family="'GeistMono', 'SF Mono', 'Menlo', monospace" font-size="48" font-weight="300">
+    fiddlehead
+  </text>
+
+  <!-- tagline -->
+  <text x="600" y="380" text-anchor="middle" fill="#E0D4BD"
+    font-family="'GeistMono', 'SF Mono', 'Menlo', monospace" font-size="22" font-weight="500">
+    the meeting notes your ai agents
+  </text>
+  <text x="600" y="412" text-anchor="middle" fill="#E0D4BD"
+    font-family="'GeistMono', 'SF Mono', 'Menlo', monospace" font-size="22" font-weight="500">
+    have been waiting for.
+  </text>
+
+  <!-- subhead -->
+  <text x="600" y="480" text-anchor="middle" fill="#928772"
+    font-family="'GeistMono', 'SF Mono', 'Menlo', monospace" font-size="14">
+    record · transcribe · structure · local markdown
+  </text>
+
+  <!-- macos badge -->
+  <text x="600" y="560" text-anchor="middle" fill="#928772"
+    font-family="'GeistMono', 'SF Mono', 'Menlo', monospace" font-size="12" opacity="0.6">
+    macos 14+ · free
+  </text>
+</svg>

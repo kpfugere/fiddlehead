@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Fiddlehead — Frog Variations</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #0a0a0a;
+    color: #e0e0e0;
+    padding: 60px 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  h1 { font-size: 1.6em; font-weight: 300; margin-bottom: 8px; color: #fff; letter-spacing: 0.08em; text-transform: uppercase; }
+  .subtitle { font-size: 0.85em; color: #555; margin-bottom: 56px; }
+  .section { margin-bottom: 64px; text-align: center; width: 100%; max-width: 1100px; }
+  .section h2 { font-size: 0.75em; color: #444; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 8px; }
+  .section h3 { font-size: 0.85em; color: #777; font-weight: 400; margin-bottom: 24px; }
+  .row { display: flex; align-items: flex-end; justify-content: center; gap: 36px; margin-bottom: 16px; }
+  .item { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .item img { border-radius: 6px; }
+  .item .label { font-size: 0.65em; color: #444; }
+  .menubar { display: inline-flex; align-items: center; background: #1a1a1a; border-radius: 8px; padding: 6px 20px; gap: 14px; border: 1px solid #222; margin-top: 12px; }
+  .menubar .dot { width: 7px; height: 7px; border-radius: 50%; background: #333; }
+  .divider { width: 100%; max-width: 1100px; border: none; border-top: 1px solid #1a1a1a; margin: 0 0 64px 0; }
+  .comparison { display: flex; gap: 24px; justify-content: center; margin-top: 16px; }
+  .comp-box { width: 160px; height: 160px; display: flex; align-items: center; justify-content: center; border-radius: 14px; border: 1px solid #222; }
+  .comp-box.dark { background: #111; }
+  .comp-box.light { background: #f0f0f0; }
+  .inverted { filter: invert(1); }
+</style>
+</head>
+<body>
+  <h1>Fiddlehead</h1>
+  <p class="subtitle">Frog Face — 4 Variations</p>
+
+  <!-- V1 Original -->
+  <div class="section">
+    <h2>V1 — Original Line Art</h2>
+    <h3>Outline style with eyes, mouth, nostrils</h3>
+    <div class="row">
+      <div class="item"><img src="frog-face.svg" width="120" height="120"><span class="label">120px</span></div>
+      <div class="item"><img src="frog-face.svg" width="64" height="64"><span class="label">64px</span></div>
+      <div class="item"><img src="frog-face.svg" width="32" height="32"><span class="label">32px</span></div>
+      <div class="item"><img src="frog-face.svg" width="16" height="16"><span class="label">16px</span></div>
+    </div>
+    <div class="menubar">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <img src="frog-face.svg" width="18" height="18">
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+    <div class="comparison">
+      <div class="comp-box dark"><img src="frog-face.svg" width="100" height="100"></div>
+      <div class="comp-box light"><img src="frog-face.svg" width="100" height="100" class="inverted"></div>
+    </div>
+  </div>
+  <hr class="divider">
+
+  <!-- V2 Minimal -->
+  <div class="section">
+    <h2>V2 — Minimal</h2>
+    <h3>Just the silhouette and two dot eyes — stripped back</h3>
+    <div class="row">
+      <div class="item"><img src="frog-v2-minimal.svg" width="120" height="120"><span class="label">120px</span></div>
+      <div class="item"><img src="frog-v2-minimal.svg" width="64" height="64"><span class="label">64px</span></div>
+      <div class="item"><img src="frog-v2-minimal.svg" width="32" height="32"><span class="label">32px</span></div>
+      <div class="item"><img src="frog-v2-minimal.svg" width="16" height="16"><span class="label">16px</span></div>
+    </div>
+    <div class="menubar">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <img src="frog-v2-minimal.svg" width="18" height="18">
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+    <div class="comparison">
+      <div class="comp-box dark"><img src="frog-v2-minimal.svg" width="100" height="100"></div>
+      <div class="comp-box light"><img src="frog-v2-minimal.svg" width="100" height="100" class="inverted"></div>
+    </div>
+  </div>
+  <hr class="divider">
+
+  <!-- V3 Peeking -->
+  <div class="section">
+    <h2>V3 — Peeking</h2>
+    <h3>Frog peeking out of water — just the eyes and head dome</h3>
+    <div class="row">
+      <div class="item"><img src="frog-v3-peeking.svg" width="120" height="120"><span class="label">120px</span></div>
+      <div class="item"><img src="frog-v3-peeking.svg" width="64" height="64"><span class="label">64px</span></div>
+      <div class="item"><img src="frog-v3-peeking.svg" width="32" height="32"><span class="label">32px</span></div>
+      <div class="item"><img src="frog-v3-peeking.svg" width="16" height="16"><span class="label">16px</span></div>
+    </div>
+    <div class="menubar">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <img src="frog-v3-peeking.svg" width="18" height="18">
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+    <div class="comparison">
+      <div class="comp-box dark"><img src="frog-v3-peeking.svg" width="100" height="100"></div>
+      <div class="comp-box light"><img src="frog-v3-peeking.svg" width="100" height="100" class="inverted"></div>
+    </div>
+  </div>
+  <hr class="divider">
+
+  <!-- V4 Filled -->
+  <div class="section">
+    <h2>V4 — Solid Fill</h2>
+    <h3>Bold graphic style — white filled shape with cutout details</h3>
+    <div class="row">
+      <div class="item"><img src="frog-v4-filled.svg" width="120" height="120"><span class="label">120px</span></div>
+      <div class="item"><img src="frog-v4-filled.svg" width="64" height="64"><span class="label">64px</span></div>
+      <div class="item"><img src="frog-v4-filled.svg" width="32" height="32"><span class="label">32px</span></div>
+      <div class="item"><img src="frog-v4-filled.svg" width="16" height="16"><span class="label">16px</span></div>
+    </div>
+    <div class="menubar">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <img src="frog-v4-filled.svg" width="18" height="18">
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+    <div class="comparison">
+      <div class="comp-box dark"><img src="frog-v4-filled.svg" width="100" height="100"></div>
+      <div class="comp-box light"><img src="frog-v4-filled.svg" width="100" height="100" class="inverted"></div>
+    </div>
+  </div>
+
+</body>
+</html>

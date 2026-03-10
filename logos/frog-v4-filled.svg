@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <rect width="128" height="128" rx="28" fill="#111111"/>
+  <!-- Solid filled frog face - bold graphic style -->
+  <!-- Head shape -->
+  <ellipse cx="64" cy="74" rx="36" ry="28" fill="#FFFFFF"/>
+  <!-- Left eye bump -->
+  <circle cx="42" cy="48" r="18" fill="#FFFFFF"/>
+  <!-- Right eye bump -->
+  <circle cx="86" cy="48" r="18" fill="#FFFFFF"/>
+  <!-- Left eye hole -->
+  <circle cx="42" cy="48" r="9" fill="#111111"/>
+  <!-- Left pupil -->
+  <circle cx="44" cy="47" r="4.5" fill="#FFFFFF"/>
+  <!-- Right eye hole -->
+  <circle cx="86" cy="48" r="9" fill="#111111"/>
+  <!-- Right pupil -->
+  <circle cx="88" cy="47" r="4.5" fill="#FFFFFF"/>
+  <!-- Mouth cutout -->
+  <path d="M 40 80 Q 64 92 88 80" fill="none" stroke="#111111" stroke-width="4" stroke-linecap="round"/>
+  <!-- Nostrils -->
+  <circle cx="56" cy="70" r="2.5" fill="#111111"/>
+  <circle cx="72" cy="70" r="2.5" fill="#111111"/>
+</svg>

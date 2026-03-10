@@ -1,0 +1,134 @@
+---
+
+---
+
+<section id="output" class="section">
+  <div class="output-header-section reveal">
+    <h2 class="heading-lg">just markdown. nothing proprietary.</h2>
+    <p class="subhead output-sub">
+      open in obsidian, vs code, grep it, git it, pipe it.
+      your notes are plain files on your filesystem — forever.
+    </p>
+  </div>
+
+  <div class="output-demo reveal reveal-delay-1">
+    <div class="output-file-preview">
+      <div class="output-tab-bar">
+        <span class="output-tab active">2026-02-10_standup-sync.md</span>
+      </div>
+      <pre class="output-source preserve-case"><code><span class="hl-frontmatter">---
+date: 2026-02-10
+duration: 23m
+speakers: 3
+speaker_names: Kyle, Sarah, Marcus
+tags: api-migration, dashboard-redesign, onboarding
+topics: API v3 Migration, Dashboard Redesign, Onboarding Docs
+meeting: Standup Sync
+attendees: Kyle Fugere, Sarah Chen, Marcus Rivera
+calendar_event_id: abc123
+source: openai
+---</span>
+
+<span class="hl-h1"># Standup Sync</span>
+
+<span class="hl-h2">## Session Summary</span>
+Team synced on three active workstreams. API migration is nearly
+complete with a Friday deploy target. Dashboard redesign review
+shifted to Thursday. Onboarding docs flagged as priority before
+March new hires.
+
+<span class="hl-h2">## Topics</span>
+
+<span class="hl-h3">### API v3 Migration</span>
+Auth endpoints fully migrated. Billing webhooks are the remaining
+work, targeting Friday deploy.
+
+<span class="hl-h4">#### Key Points</span>
+<span class="hl-bullet">-</span> v3 migration is 90% complete
+<span class="hl-bullet">-</span> Billing webhooks are the last piece
+
+<span class="hl-h4">#### Action Items</span>
+<span class="hl-checkbox">- [ ]</span> <span class="hl-mention">@kyle</span> finish v3 endpoint tests by Thursday
+<span class="hl-checkbox">- [ ]</span> <span class="hl-mention">@sarah</span> run client SDK tests against new endpoints
+
+<span class="hl-h3">### Onboarding Docs</span>
+Docs are outdated after recent tooling changes. Need updating
+before new hires start in March.
+
+<span class="hl-h4">#### Action Items</span>
+<span class="hl-checkbox">- [ ]</span> <span class="hl-mention">@sarah</span> update onboarding docs with new tooling setup
+
+<span class="hl-h2">## Transcript</span>
+<span class="hl-speaker">**Kyle:**</span> alright let's keep this quick. where are we on the api migration?
+
+<span class="hl-speaker">**Marcus:**</span> v3 is about ninety percent done. the auth endpoints are all migrated...</code></pre>
+    </div>
+  </div>
+</section>
+
+<style>
+  .output-header-section {
+    text-align: center;
+    margin-bottom: var(--space-2xl);
+  }
+
+  .output-sub {
+    margin: var(--space-lg) auto 0;
+  }
+
+  .output-file-preview {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  .output-tab-bar {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    padding: 0 var(--space-lg);
+  }
+
+  .output-tab {
+    font-size: 14px;
+    color: var(--text-secondary);
+    padding: 10px 16px;
+    border-bottom: 2px solid transparent;
+  }
+  .output-tab.active {
+    color: var(--text-primary);
+    border-bottom-color: var(--accent);
+  }
+
+  .output-source {
+    padding: var(--space-xl);
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    overflow-x: auto;
+    margin: 0;
+  }
+  .output-source code {
+    font-family: inherit;
+  }
+
+  /* syntax highlighting */
+  :global(.hl-frontmatter) { color: var(--text-secondary); opacity: 0.5; }
+  :global(.hl-h1) { color: var(--text-primary); font-weight: 700; }
+  :global(.hl-h2) { color: var(--text-primary); font-weight: 500; }
+  :global(.hl-bullet) { color: var(--accent); }
+  :global(.hl-checkbox) { color: var(--accent); }
+  :global(.hl-mention) { color: var(--accent); }
+  :global(.hl-h3) { color: var(--text-primary); font-weight: 500; }
+  :global(.hl-h4) { color: var(--text-secondary); font-weight: 500; opacity: 0.8; }
+  :global(.hl-speaker) { color: var(--text-primary); }
+
+  @media (max-width: 768px) {
+    .output-source {
+      padding: var(--space-lg);
+      font-size: 12px;
+    }
+  }
+</style>

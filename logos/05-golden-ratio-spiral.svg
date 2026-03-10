@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <linearGradient id="g5a" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0FA968" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#0D7B4C" stop-opacity="0.7"/>
+    </linearGradient>
+    <linearGradient id="g5b" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#14C4A0" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#0FA968" stop-opacity="0.5"/>
+    </linearGradient>
+  </defs>
+  <rect width="128" height="128" rx="28" fill="#0F1923"/>
+  <!-- Overlapping translucent circles forming golden spiral -->
+  <circle cx="58" cy="72" r="38" fill="url(#g5a)" opacity="0.4"/>
+  <circle cx="72" cy="58" r="28" fill="url(#g5b)" opacity="0.5"/>
+  <circle cx="62" cy="54" r="18" fill="#0FA968" opacity="0.4"/>
+  <circle cx="58" cy="60" r="11" fill="#14C4A0" opacity="0.5"/>
+  <circle cx="61" cy="62" r="6" fill="#0FA968" opacity="0.6"/>
+  <circle cx="60" cy="60" r="3" fill="#7FFFD4" opacity="0.8"/>
+  <!-- Subtle spiral path connecting centers -->
+  <path d="M 60 60 C 55 58, 50 54, 52 46 C 54 38, 62 32, 74 36 C 86 40, 96 54, 90 72 C 84 90, 66 102, 44 98 C 22 94, 14 74, 22 52"
+        fill="none" stroke="#7FFFD4" stroke-width="1.5" stroke-opacity="0.5" stroke-linecap="round"/>
+</svg>

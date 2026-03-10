@@ -1,0 +1,76 @@
+---
+interface Props {
+  icon: string;
+  name: string;
+  description: string;
+  file: string;
+}
+
+const { icon, name, description, file } = Astro.props;
+---
+
+<a href={file} download class="card skill-card">
+  <div class="skill-top">
+    <span class="skill-icon">{icon}</span>
+    <span class="skill-arrow">▸</span>
+  </div>
+  <h3 class="heading-md skill-name">{name}</h3>
+  <p class="skill-desc">{description}</p>
+  <span class="label skill-download">download skill.md</span>
+</a>
+
+<style>
+  .skill-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .skill-card:hover {
+    border-color: var(--accent);
+  }
+
+  .skill-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .skill-icon {
+    font-size: 20px;
+    color: var(--accent);
+  }
+
+  .skill-arrow {
+    color: var(--text-secondary);
+    opacity: 0.4;
+    transition: transform 0.2s ease, opacity 0.2s;
+  }
+  .skill-card:hover .skill-arrow {
+    opacity: 1;
+    color: var(--accent);
+    transform: translateX(4px);
+  }
+
+  .skill-name {
+    margin-top: 4px;
+  }
+
+  .skill-desc {
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    flex: 1;
+  }
+
+  .skill-download {
+    margin-top: var(--space-sm);
+    color: var(--accent);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .skill-card:hover .skill-download {
+    opacity: 1;
+  }
+</style>

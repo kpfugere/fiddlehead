@@ -1,0 +1,81 @@
+/* keyframes */
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slide-in-down {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes cursor-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 20px var(--glow-accent); }
+  50% { box-shadow: 0 0 40px var(--glow-accent); }
+}
+
+/* hero entrance */
+
+.hero-enter {
+  animation: fade-in-up 0.8s ease-out both;
+}
+.hero-enter-1 { animation-delay: 0.1s; }
+.hero-enter-2 { animation-delay: 0.2s; }
+.hero-enter-3 { animation-delay: 0.35s; }
+.hero-enter-4 { animation-delay: 0.5s; }
+.hero-enter-5 { animation-delay: 0.65s; }
+
+/* nav */
+
+.nav-hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+}
+.nav-visible {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* terminal cursor */
+
+.terminal-cursor {
+  display: inline-block;
+  width: 8px;
+  height: 16px;
+  background: var(--text-primary);
+  animation: cursor-blink 1s step-end infinite;
+  vertical-align: middle;
+  margin-left: 2px;
+}
+
+/* skill card arrow */
+
+.skill-arrow {
+  transition: transform 0.2s ease;
+}
+.skill-card:hover .skill-arrow {
+  transform: translateX(4px);
+}

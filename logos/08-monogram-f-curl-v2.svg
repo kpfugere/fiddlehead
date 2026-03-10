@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <!-- Dark rounded square background -->
+  <rect width="128" height="128" rx="28" fill="#111111"/>
+  <!-- Single vertical F with one fiddlehead curl at top -->
+  <path d="M 44 104 L 44 36" fill="none" stroke="#FFFFFF" stroke-width="9" stroke-linecap="round"/>
+  <!-- Single top stroke curling into fiddlehead -->
+  <path d="M 44 36 L 66 36 C 80 36, 90 44, 90 54 C 90 64, 82 70, 74 68 C 66 66, 64 58, 68 53 C 72 48, 78 50, 78 55"
+        fill="none" stroke="#FFFFFF" stroke-width="9" stroke-linecap="round"/>
+  <circle cx="78" cy="55" r="4" fill="#FFFFFF"/>
+</svg>

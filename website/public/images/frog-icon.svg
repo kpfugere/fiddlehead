@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 96" width="128" height="96">
+  <!-- frog face only, no background rect — for nav and inline use -->
+  <path d="M 18 78 Q 18 46, 64 46 Q 110 46, 110 78" fill="currentColor" stroke="none"/>
+  <ellipse cx="42" cy="40" rx="16" ry="18" fill="currentColor"/>
+  <ellipse cx="86" cy="40" rx="16" ry="18" fill="currentColor"/>
+  <ellipse cx="42" cy="36" rx="8" ry="9" fill="var(--bg, #18140F)"/>
+  <circle class="frog-pupil-left" cx="44" cy="35" r="4" fill="currentColor"/>
+  <ellipse cx="86" cy="36" rx="8" ry="9" fill="var(--bg, #18140F)"/>
+  <circle class="frog-pupil-right" cx="88" cy="35" r="4" fill="currentColor"/>
+</svg>

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <rect width="128" height="128" rx="28" fill="#111111"/>
+  <!-- Head shape -->
+  <ellipse cx="64" cy="72" rx="34" ry="28" fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round"/>
+  <!-- Left eye bulge -->
+  <circle cx="44" cy="48" r="16" fill="none" stroke="#FFFFFF" stroke-width="6"/>
+  <!-- Right eye bulge -->
+  <circle cx="84" cy="48" r="16" fill="none" stroke="#FFFFFF" stroke-width="6"/>
+  <!-- Left pupil -->
+  <circle cx="44" cy="48" r="5" fill="#FFFFFF"/>
+  <!-- Right pupil -->
+  <circle cx="84" cy="48" r="5" fill="#FFFFFF"/>
+  <!-- Mouth - wide subtle smile -->
+  <path d="M 42 80 Q 64 92 86 80" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round"/>
+  <!-- Nostrils -->
+  <circle cx="56" cy="70" r="2.5" fill="#FFFFFF"/>
+  <circle cx="72" cy="70" r="2.5" fill="#FFFFFF"/>
+</svg>

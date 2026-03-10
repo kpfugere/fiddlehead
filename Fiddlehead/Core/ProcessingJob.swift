@@ -1,0 +1,306 @@
+import Foundation
+import os.log
+
+private let logger = Logger(subsystem: "com.kylefugere.Fiddlehead", category: "ProcessingJob")
+
+/// A self-contained, observable unit of work that processes a recorded audio file
+/// through the compress → transcribe → structure → save pipeline.
+///
+/// Designed to run independently from the recording pipeline so that new recordings
+/// can start while previous recordings are still being processed.
+@MainActor
+final class ProcessingJob: ObservableObject, Identifiable {
+    let id = UUID()
+    @Published var stage: ProcessingStage = .transcribing
+    @Published var errorMessage: String?
+
+    // Snapshotted inputs — everything needed to process without touching AppSettings
+    private let audioURL: URL
+    private let openAIAPIKey: String
+    private let transcriptionProvider: TranscriptionProvider
+    private let assemblyAIAPIKey: String
+    private let speakerName: String?
+    private let saveLocation: URL
+    private let keepAudioEnabled: Bool
+    private let recordingDate: Date
+    private let activeMeeting: MeetingEvent?
+    private let isTempAudio: Bool
+    private let channelCount: Int
+
+    /// Result callback: (noteURL, title?) on success, nil on failure
+    var onComplete: ((URL?, String?) -> Void)?
+
+    init(
+        audioURL: URL,
+        openAIAPIKey: String,
+        transcriptionProvider: TranscriptionProvider,
+        assemblyAIAPIKey: String,
+        speakerName: String?,
+        saveLocation: URL,
+        keepAudioEnabled: Bool,
+        recordingDate: Date,
+        activeMeeting: MeetingEvent?,
+        isTempAudio: Bool,
+        channelCount: Int = 1
+    ) {
+        self.audioURL = audioURL
+        self.openAIAPIKey = openAIAPIKey
+        self.transcriptionProvider = transcriptionProvider
+        self.assemblyAIAPIKey = assemblyAIAPIKey
+        self.speakerName = speakerName
+        self.saveLocation = saveLocation
+        self.keepAudioEnabled = keepAudioEnabled
+        self.recordingDate = recordingDate
+        self.activeMeeting = activeMeeting
+        self.isTempAudio = isTempAudio
+        self.channelCount = channelCount
+    }
+
+    // MARK: - Run
+
+    func run() async {
+        logger.info("ProcessingJob started — audio: \(self.audioURL.lastPathComponent)")
+
+        // Step 1: Transcribe
+        stage = .transcribing
+
+        var transcript: AssembledTranscript?
+
+        guard !openAIAPIKey.isEmpty else {
+            logger.warning("OpenAI API key empty — cannot process")
+            errorMessage = "No OpenAI API key"
+            cleanupTempAudio()
+            onComplete?(nil, nil)
+            return
+        }
+
+        guard FileManager.default.fileExists(atPath: audioURL.path) else {
+            logger.error("Audio file not found: \(self.audioURL.path)")
+            errorMessage = "Audio file not found"
+            cleanupTempAudio()
+            onComplete?(nil, nil)
+            return
+        }
+
+        if transcriptionProvider == .assemblyai {
+            guard !assemblyAIAPIKey.isEmpty else {
+                logger.warning("AssemblyAI API key empty — cannot process")
+                errorMessage = "No AssemblyAI API key"
+                cleanupTempAudio()
+                onComplete?(nil, nil)
+                return
+            }
+        }
+
+        logger.info("Using transcription provider: \(String(describing: self.transcriptionProvider))")
+
+        let service: TranscriptionService = switch transcriptionProvider {
+        case .openai:
+            OpenAITranscriptionService(apiKey: openAIAPIKey)
+        case .assemblyai:
+            AssemblyAITranscriptionService(apiKey: assemblyAIAPIKey)
+        }
+
+        do {
+            transcript = try await service.transcribe(
+                fileURL: audioURL,
+                channels: channelCount
+            )
+            logger.info("Transcript received — segments: \(transcript!.segments.count), duration: \(transcript!.duration)s")
+        } catch {
+            logger.error("Transcription failed: \(error.localizedDescription, privacy: .public)")
+
+            let userMessage: String
+            if let apiError = error as? OpenAITranscriptionError,
+               case .apiError(let statusCode, _) = apiError {
+                switch statusCode {
+                case 401: userMessage = "Invalid OpenAI API key"
+                case 429: userMessage = "OpenAI quota exceeded — add credits"
+                case 413: userMessage = "Audio too large for OpenAI"
+                default: userMessage = "OpenAI error (\(statusCode))"
+                }
+            } else if let apiError = error as? AssemblyAITranscriptionError {
+                switch apiError {
+                case .uploadFailed(let code, _), .apiError(let code, _):
+                    switch code {
+                    case 401: userMessage = "Invalid AssemblyAI API key"
+                    case 429: userMessage = "AssemblyAI rate limited — try again"
+                    default: userMessage = "AssemblyAI error (\(code))"
+                    }
+                case .timeout:
+                    userMessage = "AssemblyAI transcription timed out"
+                case .transcriptionFailed(let msg):
+                    userMessage = "AssemblyAI failed: \(msg)"
+                case .invalidResponse:
+                    userMessage = "Invalid response from AssemblyAI"
+                }
+            } else {
+                userMessage = "Transcription failed"
+            }
+
+            errorMessage = userMessage
+            cleanupTempAudio()
+            onComplete?(nil, nil)
+            return
+        }
+
+        if transcript == nil || transcript!.isEmpty {
+            if keepAudioEnabled {
+                onComplete?(audioURL, nil)
+            } else {
+                errorMessage = "No speech detected"
+                cleanupTempAudio()
+                onComplete?(nil, nil)
+            }
+            return
+        }
+
+        let confirmedTranscript = transcript!
+
+        // Step 2: Structure via OpenAI
+        stage = .structuring
+
+        var structuredContent: String?
+        var structuringTruncated = false
+
+        let structurer = OpenAIStructuringService(apiKey: openAIAPIKey)
+        do {
+            let result = try await structurer.structure(
+                transcript: confirmedTranscript.formatted(speakerName: speakerName),
+                duration: confirmedTranscript.duration,
+                meetingTitle: activeMeeting?.title
+            )
+            structuredContent = result.content
+            structuringTruncated = result.truncated
+        } catch {
+            logger.error("Structuring failed: \(error.localizedDescription, privacy: .public)")
+        }
+
+        // Step 3: Save
+        stage = .saving
+
+        if let structured = structuredContent {
+            let tags = NotePostProcessor.extractTags(from: structured)
+            var cleanedContent = NotePostProcessor.stripTagsComment(from: structured)
+            cleanedContent = NotePostProcessor.stripEmptySections(from: cleanedContent)
+            let title = NoteStorage.extractTitleFromContent(cleanedContent)
+            let structuringStatus = structuringTruncated ? "partial" : "complete"
+            let noteURL = saveStructuredNote(
+                content: cleanedContent,
+                title: title,
+                transcript: confirmedTranscript,
+                tags: tags,
+                structuringStatus: structuringStatus
+            )
+            cleanupTempAudio()
+            onComplete?(noteURL, title)
+        } else {
+            // Fallback: save raw transcript
+            let fallbackURL = saveFallback(transcript: confirmedTranscript)
+            cleanupTempAudio()
+            onComplete?(fallbackURL, nil)
+        }
+    }
+
+    // MARK: - Save Helpers
+
+    private func saveStructuredNote(
+        content: String,
+        title: String?,
+        transcript: AssembledTranscript,
+        tags: [String] = [],
+        structuringStatus: String? = nil
+    ) -> URL? {
+        let baseFilename = NoteStorage.noteFilename(for: recordingDate, title: title)
+        let filename = NoteStorage.uniqueFilename(base: baseFilename, in: saveLocation)
+        let url = saveLocation.appendingPathComponent(filename)
+
+        let durationMin = Int(transcript.duration) / 60
+        let durationSec = Int(transcript.duration) % 60
+
+        var frontmatter = """
+        ---
+        date: \(ISO8601DateFormatter().string(from: recordingDate))
+        duration: \(durationMin)m \(durationSec)s
+        speakers: \(transcript.speakerCount)
+        """
+
+        if !tags.isEmpty {
+            frontmatter += "\ntags: [\(tags.joined(separator: ", "))]"
+        }
+
+        if let structuringStatus {
+            frontmatter += "\nstructuring_status: \(structuringStatus)"
+        }
+
+        if let meeting = activeMeeting {
+            frontmatter += "\nmeeting: \(meeting.title)"
+            frontmatter += "\nattendees: \(meeting.attendees.joined(separator: ", "))"
+            frontmatter += "\ncalendar_event_id: \(meeting.id)"
+        }
+
+        frontmatter += "\n---"
+
+        let fullContent = """
+        \(frontmatter)
+
+        \(content)
+        """
+
+        do {
+            try fullContent.write(to: url, atomically: true, encoding: .utf8)
+            logger.info("Note saved: \(filename)")
+            return url
+        } catch {
+            logger.error("Failed to save note: \(error.localizedDescription)")
+            return nil
+        }
+    }
+
+    private func saveFallback(transcript: AssembledTranscript?) -> URL? {
+        guard let transcript, !transcript.isEmpty else { return nil }
+
+        let baseFilename = NoteStorage.transcriptFilename(for: recordingDate)
+        let filename = NoteStorage.uniqueFilename(base: baseFilename, in: saveLocation)
+        let url = saveLocation.appendingPathComponent(filename)
+
+        let durationMin = Int(transcript.duration) / 60
+        let durationSec = Int(transcript.duration) % 60
+
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .short
+
+        let content = """
+        ---
+        date: \(ISO8601DateFormatter().string(from: recordingDate))
+        duration: \(durationMin)m \(durationSec)s
+        status: unstructured
+        ---
+
+        # Recording — \(formatter.string(from: recordingDate))
+
+        > Note: This transcript could not be structured automatically.
+
+        ## Transcript
+
+        \(transcript.formatted(speakerName: speakerName))
+        """
+
+        do {
+            try content.write(to: url, atomically: true, encoding: .utf8)
+            logger.info("Fallback transcript saved: \(filename)")
+            return url
+        } catch {
+            logger.error("Failed to save fallback: \(error.localizedDescription)")
+            return nil
+        }
+    }
+
+    // MARK: - Cleanup
+
+    private func cleanupTempAudio() {
+        guard isTempAudio else { return }
+        try? FileManager.default.removeItem(at: audioURL)
+    }
+}

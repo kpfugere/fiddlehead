@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <linearGradient id="g3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4ECDC4"/>
+      <stop offset="100%" stop-color="#2D8B4E"/>
+    </linearGradient>
+  </defs>
+  <circle cx="64" cy="64" r="60" fill="#FAFAF8"/>
+  <!-- Left quote spiral -->
+  <path d="M 52 82 C 52 82, 25 78, 25 55 C 25 38, 36 30, 46 30 C 55 30, 60 37, 60 44 C 60 50, 55 54, 50 54 C 46 54, 44 51, 44 48"
+        fill="none" stroke="url(#g3)" stroke-width="7" stroke-linecap="round"/>
+  <circle cx="44" cy="48" r="3.5" fill="#3BA88E"/>
+  <!-- Right quote spiral -->
+  <path d="M 90 82 C 90 82, 63 78, 63 55 C 63 38, 74 30, 84 30 C 93 30, 98 37, 98 44 C 98 50, 93 54, 88 54 C 84 54, 82 51, 82 48"
+        fill="none" stroke="url(#g3)" stroke-width="7" stroke-linecap="round"/>
+  <circle cx="82" cy="48" r="3.5" fill="#3BA88E"/>
+</svg>

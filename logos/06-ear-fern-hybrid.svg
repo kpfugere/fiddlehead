@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <linearGradient id="g6" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3DAA60"/>
+      <stop offset="100%" stop-color="#1A5C32"/>
+    </linearGradient>
+  </defs>
+  <circle cx="64" cy="64" r="60" fill="#FFF9F0"/>
+  <!-- Ear outer shape -->
+  <path d="M 68 18 C 90 20, 105 38, 105 58 C 105 72, 98 82, 88 90 C 82 95, 78 100, 78 106 C 78 110, 72 112, 68 108 C 64 104, 62 98, 56 94 C 48 88, 40 80, 38 68 C 36 52, 44 32, 68 18 Z"
+        fill="none" stroke="url(#g6)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Inner fiddlehead spiral (replaces inner ear structure) -->
+  <path d="M 72 40 C 88 44, 92 58, 88 68 C 84 78, 72 82, 64 78 C 56 74, 54 64, 58 58 C 62 52, 70 50, 74 54 C 78 58, 76 64, 72 66 C 68 68, 66 64, 68 62"
+        fill="none" stroke="url(#g6)" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="68" cy="62" r="2.5" fill="#2D8B4E"/>
+</svg>

@@ -1,0 +1,275 @@
+/* fiddlehead design tokens — mapped from FiddleheadTheme.swift */
+
+:root {
+  --bg: #18140F;
+  --surface: #211C17;
+  --surface-hover: #2B251E;
+  --text-primary: #E0D4BD;
+  --text-secondary: #928772;
+  --recording: #C75238;
+  --saved: #77A468;
+  --accent: #D0A553;
+  --border: rgba(224, 212, 189, 0.08);
+  --border-strong: rgba(224, 212, 189, 0.15);
+  --glow-accent: rgba(208, 165, 83, 0.12);
+  --glow-recording: rgba(199, 82, 56, 0.10);
+  --code-bg: #1A1611;
+
+  /* spacing — from FiddleheadTheme */
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 16px;
+  --space-xl: 24px;
+  --space-2xl: 48px;
+  --space-3xl: 80px;
+
+  /* radii */
+  --radius: 6px;
+  --radius-lg: 10px;
+  --radius-xl: 20px;
+}
+
+/* fonts */
+
+@font-face {
+  font-family: 'GeistMono';
+  src: url('/fonts/GeistMono-Light.woff2') format('woff2');
+  font-weight: 300;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'GeistMono';
+  src: url('/fonts/GeistMono-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'GeistMono';
+  src: url('/fonts/GeistMono-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'GeistMono';
+  src: url('/fonts/GeistMono-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-display: swap;
+}
+
+/* reset */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: 'GeistMono', 'SF Mono', 'Fira Code', monospace;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--text-secondary);
+  background: var(--bg);
+  text-transform: lowercase;
+  letter-spacing: 0.01em;
+  overflow-x: hidden;
+}
+
+/* preserve casing in code blocks and output previews */
+code, pre, .preserve-case {
+  text-transform: none;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+a:hover {
+  color: var(--text-primary);
+}
+
+img, svg {
+  display: block;
+  max-width: 100%;
+}
+
+button {
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: inherit;
+  text-transform: inherit;
+}
+
+/* typography */
+
+h1, h2, h3, h4 {
+  color: var(--text-primary);
+  line-height: 1.3;
+  font-weight: 700;
+}
+
+.heading-xl {
+  font-size: clamp(28px, 5vw, 48px);
+  font-weight: 300;
+  line-height: 1.15;
+}
+
+.heading-lg {
+  font-size: clamp(22px, 4vw, 32px);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.heading-md {
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.subhead {
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--text-secondary);
+  max-width: 620px;
+  line-height: 1.7;
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  letter-spacing: 0.04em;
+}
+
+/* layout */
+
+.section {
+  padding: var(--space-3xl) var(--space-xl);
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+.section-full {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: var(--space-3xl) var(--space-xl);
+}
+
+/* cards */
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-xl);
+  transition: border-color 0.2s, box-shadow 0.3s;
+}
+.card:hover {
+  border-color: var(--border-strong);
+  box-shadow: 0 0 24px var(--glow-accent);
+}
+
+/* buttons */
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--accent);
+  color: var(--bg);
+  padding: 14px 32px;
+  border-radius: var(--radius);
+  font-weight: 500;
+  font-size: 15px;
+  transition: opacity 0.2s, transform 0.15s;
+}
+.btn-primary:hover {
+  color: var(--bg);
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--border-strong);
+  padding: 12px 28px;
+  border-radius: var(--radius);
+  font-weight: 500;
+  font-size: 15px;
+  transition: border-color 0.2s, background 0.2s;
+}
+.btn-secondary:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: rgba(208, 165, 83, 0.06);
+}
+
+/* glyph indicators */
+
+.glyph {
+  font-size: 14px;
+  font-weight: 400;
+}
+.glyph-recording { color: var(--recording); }
+.glyph-processing { color: var(--accent); }
+.glyph-saved { color: var(--saved); }
+.glyph-idle { color: var(--text-secondary); }
+
+/* scroll reveal */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* stagger delays */
+.reveal-delay-1 { transition-delay: 0.05s; }
+.reveal-delay-2 { transition-delay: 0.1s; }
+.reveal-delay-3 { transition-delay: 0.15s; }
+.reveal-delay-4 { transition-delay: 0.2s; }
+.reveal-delay-5 { transition-delay: 0.25s; }
+
+/* pulse animation for recording dot */
+
+@keyframes pulse-recording {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.pulse-recording {
+  animation: pulse-recording 1.5s ease-in-out infinite;
+}
+
+/* responsive */
+
+@media (max-width: 768px) {
+  .section {
+    padding: var(--space-2xl) var(--space-lg);
+  }
+  .section-full {
+    padding: var(--space-2xl) var(--space-lg);
+    min-height: auto;
+  }
+}
