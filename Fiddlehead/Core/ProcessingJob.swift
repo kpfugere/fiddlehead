@@ -26,6 +26,7 @@ final class ProcessingJob: ObservableObject, Identifiable {
     private let activeMeeting: MeetingEvent?
     private let isTempAudio: Bool
     private let channelCount: Int
+    private let allMeetings: [MeetingEvent]
 
     /// Result callback: (noteURL, title?) on success, nil on failure
     var onComplete: ((URL?, String?) -> Void)?
@@ -41,7 +42,8 @@ final class ProcessingJob: ObservableObject, Identifiable {
         recordingDate: Date,
         activeMeeting: MeetingEvent?,
         isTempAudio: Bool,
-        channelCount: Int = 1
+        channelCount: Int = 1,
+        allMeetings: [MeetingEvent] = []
     ) {
         self.audioURL = audioURL
         self.openAIAPIKey = openAIAPIKey
@@ -54,6 +56,7 @@ final class ProcessingJob: ObservableObject, Identifiable {
         self.activeMeeting = activeMeeting
         self.isTempAudio = isTempAudio
         self.channelCount = channelCount
+        self.allMeetings = allMeetings
     }
 
     // MARK: - Run
@@ -157,7 +160,86 @@ final class ProcessingJob: ObservableObject, Identifiable {
 
         let confirmedTranscript = transcript!
 
-        // Step 2: Structure via OpenAI
+        // Step 2: Check for multi-meeting splitting
+        if let meetingSegments = MeetingSplitter.split(
+            transcript: confirmedTranscript,
+            meetings: allMeetings,
+            recordingStart: recordingDate
+        ) {
+            logger.info("Multi-meeting split: \(meetingSegments.count) meetings detected")
+            await structureAndSaveMeetingSegments(meetingSegments)
+            return
+        }
+
+        // Single-meeting path (original behavior)
+        await structureAndSaveSingle(transcript: confirmedTranscript, meeting: activeMeeting)
+    }
+
+    // MARK: - Multi-Meeting Pipeline
+
+    private func structureAndSaveMeetingSegments(_ segments: [MeetingSegment]) async {
+        let structurer = OpenAIStructuringService(apiKey: openAIAPIKey)
+        var firstNoteURL: URL?
+        var firstTitle: String?
+
+        for (i, segment) in segments.enumerated() {
+            stage = .structuring
+            logger.info("Structuring meeting \(i + 1)/\(segments.count): \(segment.meeting.title)")
+
+            let subTranscript = AssembledTranscript(
+                segments: segment.segments,
+                duration: segment.duration,
+                multichannelLabeled: false
+            )
+
+            var structuredContent: String?
+            var structuringTruncated = false
+
+            do {
+                let result = try await structurer.structure(
+                    transcript: subTranscript.formatted(speakerName: speakerName),
+                    duration: subTranscript.duration,
+                    meetingTitle: segment.meeting.title
+                )
+                structuredContent = result.content
+                structuringTruncated = result.truncated
+            } catch {
+                logger.error("Structuring failed for '\(segment.meeting.title)': \(error.localizedDescription, privacy: .public)")
+            }
+
+            stage = .saving
+
+            if let structured = structuredContent {
+                let tags = NotePostProcessor.extractTags(from: structured)
+                var cleanedContent = NotePostProcessor.stripTagsComment(from: structured)
+                cleanedContent = NotePostProcessor.stripEmptySections(from: cleanedContent)
+                let title = NoteStorage.extractTitleFromContent(cleanedContent)
+                let structuringStatus = structuringTruncated ? "partial" : "complete"
+                let noteURL = saveStructuredNote(
+                    content: cleanedContent,
+                    title: title,
+                    transcript: subTranscript,
+                    tags: tags,
+                    structuringStatus: structuringStatus,
+                    meeting: segment.meeting
+                )
+                if firstNoteURL == nil {
+                    firstNoteURL = noteURL
+                    firstTitle = title
+                }
+            } else {
+                let fallbackURL = saveFallback(transcript: subTranscript)
+                if firstNoteURL == nil { firstNoteURL = fallbackURL }
+            }
+        }
+
+        cleanupTempAudio()
+        onComplete?(firstNoteURL, firstTitle)
+    }
+
+    // MARK: - Single-Note Pipeline
+
+    private func structureAndSaveSingle(transcript: AssembledTranscript, meeting: MeetingEvent?) async {
         stage = .structuring
 
         var structuredContent: String?
@@ -166,9 +248,9 @@ final class ProcessingJob: ObservableObject, Identifiable {
         let structurer = OpenAIStructuringService(apiKey: openAIAPIKey)
         do {
             let result = try await structurer.structure(
-                transcript: confirmedTranscript.formatted(speakerName: speakerName),
-                duration: confirmedTranscript.duration,
-                meetingTitle: activeMeeting?.title
+                transcript: transcript.formatted(speakerName: speakerName),
+                duration: transcript.duration,
+                meetingTitle: meeting?.title
             )
             structuredContent = result.content
             structuringTruncated = result.truncated
@@ -176,7 +258,6 @@ final class ProcessingJob: ObservableObject, Identifiable {
             logger.error("Structuring failed: \(error.localizedDescription, privacy: .public)")
         }
 
-        // Step 3: Save
         stage = .saving
 
         if let structured = structuredContent {
@@ -188,15 +269,15 @@ final class ProcessingJob: ObservableObject, Identifiable {
             let noteURL = saveStructuredNote(
                 content: cleanedContent,
                 title: title,
-                transcript: confirmedTranscript,
+                transcript: transcript,
                 tags: tags,
-                structuringStatus: structuringStatus
+                structuringStatus: structuringStatus,
+                meeting: meeting
             )
             cleanupTempAudio()
             onComplete?(noteURL, title)
         } else {
-            // Fallback: save raw transcript
-            let fallbackURL = saveFallback(transcript: confirmedTranscript)
+            let fallbackURL = saveFallback(transcript: transcript)
             cleanupTempAudio()
             onComplete?(fallbackURL, nil)
         }
@@ -209,7 +290,8 @@ final class ProcessingJob: ObservableObject, Identifiable {
         title: String?,
         transcript: AssembledTranscript,
         tags: [String] = [],
-        structuringStatus: String? = nil
+        structuringStatus: String? = nil,
+        meeting: MeetingEvent? = nil
     ) -> URL? {
         let baseFilename = NoteStorage.noteFilename(for: recordingDate, title: title)
         let filename = NoteStorage.uniqueFilename(base: baseFilename, in: saveLocation)
@@ -233,7 +315,7 @@ final class ProcessingJob: ObservableObject, Identifiable {
             frontmatter += "\nstructuring_status: \(structuringStatus)"
         }
 
-        if let meeting = activeMeeting {
+        if let meeting = meeting ?? activeMeeting {
             frontmatter += "\nmeeting: \(meeting.title)"
             frontmatter += "\nattendees: \(meeting.attendees.joined(separator: ", "))"
             frontmatter += "\ncalendar_event_id: \(meeting.id)"

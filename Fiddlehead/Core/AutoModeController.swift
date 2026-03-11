@@ -37,6 +37,7 @@ final class AutoModeController: ObservableObject {
     private var silenceMonitorTask: Task<Void, Never>?
     private var maxDurationTask: Task<Void, Never>?
     private var tempAudioURL: URL?
+    private var actualChannelCount: Int = 1
 
     func configure(settings: AppSettings) {
         self.settings = settings
@@ -105,10 +106,20 @@ final class AutoModeController: ObservableObject {
 
         let audioStream = audioCaptureManager.prepareStream()
 
+        // Use stereo interleave when AssemblyAI multichannel is applicable
+        let wantStereo = settings.systemAudioEnabled && settings.transcriptionProvider == .assemblyai
+
         do {
             try audioCaptureManager.startCapture(
                 systemAudio: settings.systemAudioEnabled,
-                saveAudioTo: tempURL
+                stereo: wantStereo,
+                saveAudioTo: tempURL,
+                onReady: { [weak self] actualChannels in
+                    guard let self else { return }
+                    self.actualChannelCount = actualChannels
+                    self.silenceDetector.channels = actualChannels
+                    logger.info("Auto capture ready — actual channels: \(actualChannels)")
+                }
             )
             state = .recording
             currentRecordingDuration = 0
@@ -116,7 +127,7 @@ final class AutoModeController: ObservableObject {
             startSilenceMonitor(stream: audioStream)
             startMaxDurationGuard(settings: settings)
 
-            logger.info("Auto recording started")
+            logger.info("Auto recording started — stereo: \(wantStereo)")
         } catch {
             logger.error("Auto recording failed to start: \(error.localizedDescription, privacy: .public)")
             cleanupTempAudio()
@@ -154,9 +165,11 @@ final class AutoModeController: ObservableObject {
         let speakerName = settings?.speakerName ?? ""
         let saveLocation = settings?.saveLocation
         let audioToCleanup = tempAudioURL
+        let channelCount = actualChannelCount
 
         // Clear temp reference so it doesn't get cleaned up by a new recording cycle
         tempAudioURL = nil
+        actualChannelCount = 1
 
         // Return to listening immediately — processing runs in background
         startCooldown()
@@ -170,7 +183,8 @@ final class AutoModeController: ObservableObject {
                 assemblyAIAPIKey: assemblyAIAPIKey,
                 speakerName: speakerName,
                 saveLocation: saveLocation,
-                audioToCleanup: audioToCleanup
+                audioToCleanup: audioToCleanup,
+                channelCount: channelCount
             )
         }
     }
@@ -194,7 +208,8 @@ final class AutoModeController: ObservableObject {
         assemblyAIAPIKey: String,
         speakerName: String,
         saveLocation: URL?,
-        audioToCleanup: URL?
+        audioToCleanup: URL?,
+        channelCount: Int
     ) async {
         guard let audioURL, FileManager.default.fileExists(atPath: audioURL.path) else {
             logger.error("No audio file found for auto mode processing")
@@ -232,7 +247,7 @@ final class AutoModeController: ObservableObject {
         let transcript: AssembledTranscript
 
         do {
-            transcript = try await service.transcribe(fileURL: audioURL, channels: 1)
+            transcript = try await service.transcribe(fileURL: audioURL, channels: channelCount)
             logger.info("Auto transcript — segments: \(transcript.segments.count), duration: \(transcript.duration, format: .fixed(precision: 0))s")
         } catch {
             logger.error("Auto transcription failed: \(error.localizedDescription, privacy: .public)")
@@ -248,7 +263,25 @@ final class AutoModeController: ObservableObject {
             return
         }
 
-        // Step 2: Split by topic
+        // Step 2a: Check for multi-meeting splitting (takes priority over topic splitting)
+        let recordingEnd = recordingDate.addingTimeInterval(transcript.duration)
+        let overlappingMeetings = calendarService.meetingsDuring(from: recordingDate, to: recordingEnd)
+
+        if let meetingSegments = MeetingSplitter.split(
+            transcript: transcript,
+            meetings: overlappingMeetings,
+            recordingStart: recordingDate
+        ) {
+            logger.info("Auto mode: calendar split into \(meetingSegments.count) meetings — skipping topic split")
+            await structureAndSaveMeetingSegmentsAuto(
+                segments: meetingSegments, date: recordingDate,
+                apiKey: apiKey, speakerName: resolvedSpeakerName, saveLocation: saveLocation
+            )
+            if let audioToCleanup { try? FileManager.default.removeItem(at: audioToCleanup) }
+            return
+        }
+
+        // Step 2b: Split by topic (single or no meeting)
         let splitter = TopicSplitter(apiKey: apiKey)
         let topics: [TopicSplitter.TopicSegment]
 
@@ -488,6 +521,78 @@ final class AutoModeController: ObservableObject {
             logger.info("Auto session note saved (\(topicResults.count) topics): \(sessionTitle)")
         } catch {
             logger.error("Failed to save auto session note: \(error.localizedDescription, privacy: .public)")
+        }
+    }
+
+    // MARK: - Calendar-Aware Meeting Splitting (Auto Mode)
+
+    /// Structures and saves each meeting segment as a separate note.
+    /// Used when MeetingSplitter detects multiple calendar meetings during a recording.
+    private func structureAndSaveMeetingSegmentsAuto(
+        segments: [MeetingSegment],
+        date: Date,
+        apiKey: String,
+        speakerName: String?,
+        saveLocation: URL
+    ) async {
+        let structurer = OpenAIStructuringService(apiKey: apiKey)
+
+        for (i, segment) in segments.enumerated() {
+            logger.info("Auto mode structuring meeting \(i + 1)/\(segments.count): \(segment.meeting.title)")
+
+            let subTranscript = AssembledTranscript(
+                segments: segment.segments,
+                duration: segment.duration,
+                multichannelLabeled: false
+            )
+
+            var structuredContent: String?
+            var truncated = false
+
+            do {
+                let result = try await structurer.structure(
+                    transcript: subTranscript.formatted(speakerName: speakerName),
+                    duration: subTranscript.duration,
+                    meetingTitle: segment.meeting.title
+                )
+                structuredContent = result.content
+                truncated = result.truncated
+            } catch {
+                logger.error("Auto structuring failed for '\(segment.meeting.title)': \(error.localizedDescription, privacy: .public)")
+            }
+
+            let content: String
+            let title: String?
+            let tags: [String]
+            let structuringStatus: String?
+
+            if let structured = structuredContent {
+                tags = NotePostProcessor.extractTags(from: structured)
+                var cleaned = NotePostProcessor.stripTagsComment(from: structured)
+                cleaned = NotePostProcessor.stripEmptySections(from: cleaned)
+                content = cleaned
+                title = NoteStorage.extractTitleFromContent(cleaned)
+                structuringStatus = truncated ? "partial" : "complete"
+            } else {
+                content = subTranscript.formatted(speakerName: speakerName)
+                title = segment.meeting.title
+                tags = []
+                structuringStatus = nil
+            }
+
+            saveAutoNoteSnapshot(
+                content: content,
+                isStructured: structuredContent != nil,
+                title: title,
+                transcript: subTranscript,
+                date: date,
+                saveLocation: saveLocation,
+                tags: tags,
+                meeting: segment.meeting,
+                structuringStatus: structuringStatus
+            )
+
+            logger.info("Auto meeting note saved: \(title ?? segment.meeting.title)")
         }
     }
 

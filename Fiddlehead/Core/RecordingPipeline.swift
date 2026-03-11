@@ -22,6 +22,7 @@ final class RecordingPipeline: ObservableObject {
 
     let audioCaptureManager = AudioCaptureManager()
 
+    private let calendarService = CalendarService()
     private var timer: Timer?
     private var settings: AppSettings?
     private var recordingStartDate: Date?
@@ -157,6 +158,10 @@ final class RecordingPipeline: ObservableObject {
             return
         }
 
+        // Query all meetings that overlapped this recording for multi-meeting splitting
+        let recordingStart = recordingStartDate ?? Date()
+        let allMeetings = calendarService.meetingsDuring(from: recordingStart, to: Date())
+
         let job = ProcessingJob(
             audioURL: audioURL,
             openAIAPIKey: settings.openAIAPIKey,
@@ -165,10 +170,11 @@ final class RecordingPipeline: ObservableObject {
             speakerName: settings.speakerName.isEmpty ? nil : settings.speakerName,
             saveLocation: settings.saveLocation,
             keepAudioEnabled: settings.keepAudioEnabled,
-            recordingDate: recordingStartDate ?? Date(),
+            recordingDate: recordingStart,
             activeMeeting: activeMeeting,
             isTempAudio: tempAudioURL != nil,
-            channelCount: actualChannelCount
+            channelCount: actualChannelCount,
+            allMeetings: allMeetings
         )
 
         job.onComplete = { [weak self] noteURL, title in

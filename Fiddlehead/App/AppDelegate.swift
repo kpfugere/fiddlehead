@@ -7,6 +7,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, @unchecked Sendable {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         // Hotkey registered when pipeline is set via registerHotkey()
+        Task { @MainActor in
+            let settings = AppSettings()
+            settings.ensureSaveLocationExists()
+        }
     }
 
     func registerHotkey(pipeline: RecordingPipeline, autoMode: AutoModeController) {

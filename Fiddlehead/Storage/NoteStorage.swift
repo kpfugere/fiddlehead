@@ -99,6 +99,27 @@ final class NoteStorage {
         return "\(formatter.string(from: date))_recording.wav"
     }
 
+    // MARK: - Claude Skill
+
+    /// Ensures a CLAUDE.md file exists in the notes directory so Claude Code / Cowork
+    /// can understand the note format and search effectively.
+    static func ensureClaudeSkill(in directory: URL) {
+        let destination = directory.appendingPathComponent("CLAUDE.md")
+        let fm = FileManager.default
+
+        guard let bundled = Bundle.main.url(forResource: "NotesFolderCLAUDE", withExtension: "md"),
+              let bundledContent = try? String(contentsOf: bundled, encoding: .utf8) else {
+            return
+        }
+
+        // Write if missing; update if the bundled version changed
+        if let existing = try? String(contentsOf: destination, encoding: .utf8), existing == bundledContent {
+            return
+        }
+
+        try? bundledContent.write(to: destination, atomically: true, encoding: .utf8)
+    }
+
     // MARK: - Private
 
     /// Extract a title from the structured markdown content (first `# ` heading).

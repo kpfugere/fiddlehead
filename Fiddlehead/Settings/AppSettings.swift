@@ -75,6 +75,7 @@ final class AppSettings: ObservableObject {
         if !fm.fileExists(atPath: url.path) {
             try? fm.createDirectory(at: url, withIntermediateDirectories: true)
         }
+        NoteStorage.ensureClaudeSkill(in: url)
     }
 
     func updateSaveLocation(_ url: URL) {

@@ -86,6 +86,32 @@ final class CalendarService {
             .first
     }
 
+    /// Returns all meetings with 2+ attendees that overlap the given time window.
+    /// Does not require a video call URL. Sorted by startDate ascending.
+    func meetingsDuring(from start: Date, to end: Date) -> [MeetingEvent] {
+        guard authorizationState == .fullAccess else { return [] }
+
+        let predicate = store.predicateForEvents(
+            withStart: start.addingTimeInterval(-300), end: end, calendars: nil
+        )
+
+        return store.events(matching: predicate)
+            .filter { ($0.attendees?.count ?? 0) >= 2 }
+            .filter { $0.endDate > start && $0.startDate < end }
+            .sorted { $0.startDate < $1.startDate }
+            .map { event in
+                let names = event.attendees?.compactMap { $0.name ?? $0.url.absoluteString } ?? []
+                return MeetingEvent(
+                    id: event.eventIdentifier,
+                    title: event.title ?? "Untitled Meeting",
+                    startDate: event.startDate,
+                    endDate: event.endDate,
+                    attendees: names,
+                    videoURL: extractVideoURL(from: event)
+                )
+            }
+    }
+
     // MARK: - Private
 
     /// Search event notes, location, and URL for known video call patterns.
