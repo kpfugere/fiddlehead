@@ -2,87 +2,138 @@
 
 This folder contains meeting notes and transcripts captured by Fiddlehead, a macOS meeting recorder. Use these instructions to effectively search, analyze, and reference these notes.
 
-## File Format
+## Architecture
 
-Every note is a Markdown file with YAML frontmatter:
+Notes are organized as **daily documents** — one Markdown file per day, with all meetings for that day appended as `##`-level sections. A running **index** (`index.md`) provides a lightweight table of contents across all days.
 
-```yaml
----
-date: 2026-03-10T16:00:36Z        # ISO 8601 timestamp
-duration: 27m 26s                   # Recording length
-speakers: 2                         # Number of speakers detected
-speaker_names: Jim, Kyle            # Identified speaker names (when available)
-tags: [product, strategy, hiring]   # Topics covered
-topics: Topic One; Topic Two        # Semicolon-separated topic titles
-meeting: Product Squad              # Calendar event name (if matched)
-attendees: a@co.com, b@co.com      # Calendar attendees (if matched)
-calendar_event_id: ...              # Calendar event reference
-source: auto                        # Present when captured in auto-mode
-structuring_status: partial         # "complete" or "partial" (if structuring had issues)
----
-```
+### Files
 
-Not all fields are present on every note. Older or fallback notes may only have `date` and `status: unstructured`.
+- `YYYY-MM-DD.md` — Daily document (e.g., `2026-03-11.md`). Contains all meetings/recordings for that day.
+- `index.md` — Master table of contents. Each day has a `## YYYY-MM-DD` heading with bullet-point summaries of every meeting.
+- `CLAUDE.md` — This file. Instructions for AI tools.
 
-## File Naming
+## Daily Document Format
 
-- Structured notes: `YYYY-MM-DD_slugified-title.md` (e.g., `2026-03-10_product-squad.md`)
-- Unstructured transcripts: `YYYY-MM-DD_HHmm_transcript.md`
-- Audio files (when kept): `YYYY-MM-DD_HHmm_recording.wav`
-
-## Note Structure
-
-Structured notes follow this pattern:
+Each daily document has a YAML frontmatter header and a date title, followed by one `##` section per meeting:
 
 ```markdown
-# Meeting Title
+---
+date: 2026-03-11
+---
 
-## Session Summary
-One-paragraph overview of the entire recording session.
+# Tuesday, March 11, 2026
 
-## Topic: Topic Name
+## Product Squad Standup
+*10:00 AM · 15m 32s · 3 speakers · attendees: a@co.com, b@co.com · tags: product, roadmap*
+
 ### Summary
-Paragraph summary of this topic.
+One-paragraph overview of the meeting.
 
 ### Action Items
 - [ ] Task description (@assignee)
 
 ### Key Points
-- Bullet points of important details
+- Important details as bullet points
 
-## Full Transcript
-**Speaker Name:** Verbatim speech...
+### Transcript
+**Kyle:** Verbatim speech...
+
+## Engineering Sync
+*2:00 PM · 22m 10s · 2 speakers · tags: engineering, sprint*
+
+### Summary
+...
 ```
 
-Some notes have multiple `## Topic:` sections when the recording covered several subjects.
+### Metadata Line
+
+Each `##` section has an italic metadata line immediately below the heading:
+
+`*10:00 AM · 15m 32s · 3 speakers · attendees: a@co.com, b@co.com · tags: strategy, hiring*`
+
+Possible fields (separated by ` · `):
+- **Time**: When the recording started (e.g., `10:00 AM`)
+- **Duration**: Recording length (e.g., `15m 32s`)
+- **Speakers**: Number detected (e.g., `3 speakers`)
+- **Attendees**: Calendar attendees (e.g., `attendees: a@co.com, b@co.com`)
+- **Tags**: Topics extracted (e.g., `tags: product, roadmap`)
+- **Status**: `partial` if structuring was truncated, `unstructured` if no structuring
+- **Source**: `auto` if captured in auto-mode
+
+### Multi-Topic Sessions (Auto Mode)
+
+Auto-mode recordings that cover multiple topics appear as a single `##` section with `###`-level sub-topics:
+
+```markdown
+## Morning Working Session
+*9:00 AM · 45m 12s · 1 speaker · tags: planning, code-review · auto*
+
+### Session Summary
+Overview of the entire session.
+
+### Topic: Budget Planning
+Summary and action items for this topic.
+
+### Topic: Code Review
+Summary and action items for this topic.
+
+### Full Transcript
+**Kyle:** Verbatim speech...
+```
+
+### Unstructured Fallbacks
+
+When structuring fails, the section contains a note and raw transcript:
+
+```markdown
+## Recording — 3:00 PM
+*3:00 PM · 8m 15s · 2 speakers · unstructured*
+
+> Note: This transcript could not be structured automatically.
+
+### Transcript
+**Speaker 1:** Verbatim speech...
+```
+
+## Index Format
+
+`index.md` is a running table of contents with newest dates first:
+
+```markdown
+# Meeting Notes Index
+
+## 2026-03-11
+- **Product Squad Standup** (10:00 AM, 15m) — Discussed Q2 roadmap priorities.
+- **Engineering Sync** (2:00 PM, 22m) — Sprint review and blockers.
+
+## 2026-03-10
+- **Leadership Meeting** (9:00 AM, 45m) — Budget approval for new hires.
+```
 
 ## How to Search These Notes
 
+### Quick overview
+Read `index.md` first — it has every meeting title, time, duration, and one-line summary. This is the fastest way to find what you're looking for.
+
 ### By date
-Use `Glob` with date patterns: `2026-03-*` for all March 2026 notes, `2026-03-10*` for a specific day.
+- Open the daily document directly: `2026-03-11.md`
+- Use `Glob` with date patterns: `2026-03-*.md` for all of March
 
 ### By topic or keyword
-Use `Grep` to search note content. Useful patterns:
-- Search tags: `tags: \[.*keyword` (in frontmatter)
-- Search meeting names: `meeting: Meeting Name`
-- Search attendees: `attendees:.*email@`
-- Search action items: `- \[ \]` (open) or `- \[x\]` (completed)
-- Search by speaker: `speaker_names:.*Name` or `**Name:**` (in transcripts)
-- Search topics: `## Topic:.*keyword`
+Use `Grep` to search note content:
+- Tags: `tags:.*keyword` (in metadata lines)
+- Meeting names: `## Meeting Name` (section headings)
+- Attendees: `attendees:.*email@`
+- Action items: `- \[ \]` (open) or `- \[x\]` (completed)
+- Speaker dialogue: `**Name:**` (in transcripts)
 
 ### By content
-Full-text search with `Grep` across all `.md` files works well since notes are plain text.
-
-### Combining searches
-For complex queries (e.g., "action items from meetings with Jim in March"), use multiple searches:
-1. Find files matching the date range
-2. Filter to those mentioning the person
-3. Extract the relevant sections
+Full-text `Grep` across all `.md` files works well since everything is plain text.
 
 ## Tips
 
-- **Action item tracking**: Search for `- [ ]` across all notes to find outstanding tasks. Combine with date filters to find recent ones.
-- **Meeting continuity**: When a user asks "what did we discuss about X?", search across multiple notes to build a timeline of how a topic evolved.
-- **People context**: `speaker_names` in frontmatter and `**Name:**` in transcripts help trace who said what.
-- **Auto-mode notes** (`source: auto`) may cover multiple unrelated topics from a continuous recording session — check the `## Topic:` sections individually.
-- **Unstructured transcripts** (files ending in `_transcript.md` or with `status: unstructured`) contain raw text without sections — still searchable but less organized.
+- **Start with the index**: `index.md` gives you a bird's-eye view. Find the meeting, then jump to the daily doc for full details.
+- **Action item tracking**: Search for `- [ ]` across all daily docs to find outstanding tasks.
+- **Meeting continuity**: Search across multiple daily docs to build a timeline of how a topic evolved over days/weeks.
+- **People context**: `attendees:` in metadata and `**Name:**` in transcripts help trace who said what.
+- **One file per day**: All of a day's meetings are in one file, making it easy to see the full context of a busy day.

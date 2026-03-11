@@ -15,7 +15,7 @@ final class NoteStorage {
             return []
         }
 
-        let mdFiles = contents.filter { $0.pathExtension == "md" }
+        let mdFiles = contents.filter { $0.pathExtension == "md" && $0.lastPathComponent != "index.md" && $0.lastPathComponent != "CLAUDE.md" }
 
         let notes: [NoteFile] = mdFiles.compactMap { url in
             let attrs = try? fm.attributesOfItem(atPath: url.path)
@@ -208,7 +208,10 @@ final class NoteStorage {
 
     private static func checkIfStructured(_ url: URL) -> Bool {
         guard let content = try? String(contentsOf: url, encoding: .utf8) else { return false }
-        // Structured notes have Summary, Key Points, or Action Items sections
-        return content.contains("## Summary") || content.contains("## Key Points") || content.contains("## Action Items")
+        // Structured notes have Summary, Key Points, or Action Items sections.
+        // In daily documents these are bumped to ### level.
+        return content.contains("## Summary") || content.contains("### Summary")
+            || content.contains("## Key Points") || content.contains("### Key Points")
+            || content.contains("## Action Items") || content.contains("### Action Items")
     }
 }

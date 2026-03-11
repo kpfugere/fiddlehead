@@ -392,29 +392,40 @@ final class AutoModeController: ObservableObject {
             logger.info("Structured topic \(index + 1)/\(topics.count): \(title ?? "untitled")")
         }
 
-        // --- Single-topic: save using the existing per-note format ---
+        // --- Single-topic: append to daily document ---
         if topicResults.count <= 1 {
             let result = topicResults[0]
-            let content = result.structuredContent ?? result.transcript.formatted(speakerName: speakerName)
-            let structuringStatus: String? = result.structuredContent == nil ? nil : (result.truncated ? "partial" : "complete")
 
-            saveAutoNoteSnapshot(
-                content: content,
-                isStructured: result.structuredContent != nil,
-                title: result.title,
-                transcript: result.transcript,
-                date: date,
-                saveLocation: saveLocation,
-                tags: result.tags,
-                meeting: currentMeeting,
-                structuringStatus: structuringStatus
-            )
+            if let content = result.structuredContent {
+                let structuringStatus = result.truncated ? "partial" : "complete"
+                DailyNoteManager.appendSection(
+                    content: content,
+                    title: result.title,
+                    transcript: result.transcript,
+                    tags: result.tags,
+                    structuringStatus: structuringStatus,
+                    meeting: currentMeeting,
+                    recordingDate: date,
+                    speakerName: speakerName,
+                    saveLocation: saveLocation,
+                    isAutoMode: true
+                )
+            } else {
+                DailyNoteManager.appendFallbackSection(
+                    transcript: result.transcript,
+                    recordingDate: date,
+                    speakerName: speakerName,
+                    saveLocation: saveLocation,
+                    meeting: currentMeeting,
+                    isAutoMode: true
+                )
+            }
 
             logger.info("Auto note saved (single topic): \(result.title ?? "untitled")")
             return
         }
 
-        // --- Multi-topic: assemble into one session document ---
+        // --- Multi-topic: append as a single session section to daily document ---
 
         // Build full session transcript from all topic segments
         let allSegments = topics.flatMap(\.segments)
@@ -425,7 +436,7 @@ final class AutoModeController: ObservableObject {
         // Generate session-level summary from per-topic summaries
         let topicSummaries = topicResults.compactMap { result -> String? in
             guard let content = result.structuredContent else { return nil }
-            return extractSection(named: "Summary", from: content)
+            return DailyNoteManager.extractSummaryLine(from: content)
         }
 
         var sessionSummary: String?
@@ -449,79 +460,46 @@ final class AutoModeController: ObservableObject {
             sessionTitle = "Session — \(formatter.string(from: date))"
         }
 
-        // Build frontmatter
-        let durationMin = Int(totalDuration) / 60
-        let durationSec = Int(totalDuration) % 60
-        let topicTitles = topicResults.compactMap(\.title)
-
-        var frontmatter = """
-        ---
-        date: \(ISO8601DateFormatter().string(from: date))
-        duration: \(durationMin)m \(durationSec)s
-        speakers: \(fullTranscript.speakerCount)
-        """
-
         // Merge and deduplicate tags from all topics
         let allTags = Array(Set(topicResults.flatMap(\.tags))).sorted()
-        if !allTags.isEmpty {
-            frontmatter += "\ntags: [\(allTags.joined(separator: ", "))]"
-        }
 
-        if !topicTitles.isEmpty {
-            frontmatter += "\ntopics: \(topicTitles.joined(separator: "; "))"
-        }
-
-        if let meeting = currentMeeting {
-            frontmatter += "\nmeeting: \(meeting.title)"
-            frontmatter += "\nattendees: \(meeting.attendees.joined(separator: ", "))"
-            frontmatter += "\ncalendar_event_id: \(meeting.id)"
-        }
-
-        // Determine structuring status: partial if any topic was truncated or unstructured
-        let anyTruncated = topicResults.contains { $0.truncated }
-        let anyFailed = topicResults.contains { $0.structuredContent == nil }
-        if anyTruncated || anyFailed {
-            frontmatter += "\nstructuring_status: partial"
-        }
-
-        frontmatter += "\nsource: auto\n---"
-
-        // Build body
-        var body = "# \(sessionTitle)\n\n"
-
-        if let summary = sessionSummary {
-            body += "## Session Summary\n\(summary)\n\n"
-        }
-
+        // Build per-topic sections as ### headings
+        var topicSectionsText = ""
         for result in topicResults {
             let topicHeading = result.title ?? "Untitled Topic"
-            body += "## Topic: \(topicHeading)\n"
+            topicSectionsText += "### Topic: \(topicHeading)\n"
 
             if let content = result.structuredContent {
-                // Extract sections (Summary, Action Items, Key Points, Decisions)
-                // but skip the title heading and transcript — we have our own full transcript
-                body += extractTopicSections(from: content)
+                // Transform structured content: strip title, bump headings for sub-topic level
+                let transformed = DailyNoteManager.transformForDaily(content: content)
+                topicSectionsText += transformed
             } else {
-                body += result.transcript.formatted(speakerName: speakerName)
+                topicSectionsText += result.transcript.formatted(speakerName: speakerName)
             }
 
-            body += "\n\n"
+            topicSectionsText += "\n\n"
         }
 
-        body += "## Full Transcript\n\(fullTranscriptText)"
+        // Determine structuring status
+        let anyTruncated = topicResults.contains { $0.truncated }
+        let anyFailed = topicResults.contains { $0.structuredContent == nil }
+        let structuringPartial = anyTruncated || anyFailed
 
-        // Save as single file
-        let fullContent = "\(frontmatter)\n\n\(body)"
-        let baseFilename = NoteStorage.noteFilename(for: date, title: sessionTitle)
-        let filename = NoteStorage.uniqueFilename(base: baseFilename, in: saveLocation)
-        let url = saveLocation.appendingPathComponent(filename)
+        DailyNoteManager.appendMultiTopicSession(
+            sessionTitle: sessionTitle,
+            sessionSummary: sessionSummary,
+            topicSections: topicSectionsText.trimmingCharacters(in: .whitespacesAndNewlines),
+            fullTranscriptText: fullTranscriptText,
+            totalDuration: totalDuration,
+            speakerCount: fullTranscript.speakerCount,
+            tags: allTags,
+            meeting: currentMeeting,
+            recordingDate: date,
+            saveLocation: saveLocation,
+            structuringPartial: structuringPartial
+        )
 
-        do {
-            try fullContent.write(to: url, atomically: true, encoding: .utf8)
-            logger.info("Auto session note saved (\(topicResults.count) topics): \(sessionTitle)")
-        } catch {
-            logger.error("Failed to save auto session note: \(error.localizedDescription, privacy: .public)")
-        }
+        logger.info("Auto session note saved (\(topicResults.count) topics): \(sessionTitle)")
     }
 
     // MARK: - Calendar-Aware Meeting Splitting (Auto Mode)
@@ -580,142 +558,32 @@ final class AutoModeController: ObservableObject {
                 structuringStatus = nil
             }
 
-            saveAutoNoteSnapshot(
-                content: content,
-                isStructured: structuredContent != nil,
-                title: title,
-                transcript: subTranscript,
-                date: date,
-                saveLocation: saveLocation,
-                tags: tags,
-                meeting: segment.meeting,
-                structuringStatus: structuringStatus
-            )
+            if structuredContent != nil {
+                DailyNoteManager.appendSection(
+                    content: content,
+                    title: title,
+                    transcript: subTranscript,
+                    tags: tags,
+                    structuringStatus: structuringStatus,
+                    meeting: segment.meeting,
+                    recordingDate: date,
+                    speakerName: speakerName,
+                    saveLocation: saveLocation,
+                    isAutoMode: true
+                )
+            } else {
+                DailyNoteManager.appendFallbackSection(
+                    transcript: subTranscript,
+                    recordingDate: date,
+                    speakerName: speakerName,
+                    saveLocation: saveLocation,
+                    meeting: segment.meeting,
+                    isAutoMode: true
+                )
+            }
 
             logger.info("Auto meeting note saved: \(title ?? segment.meeting.title)")
         }
-    }
-
-    private func saveAutoNoteSnapshot(
-        content: String,
-        isStructured: Bool,
-        title: String?,
-        transcript: AssembledTranscript,
-        date: Date,
-        saveLocation: URL,
-        tags: [String] = [],
-        meeting: MeetingEvent? = nil,
-        structuringStatus: String? = nil
-    ) {
-        let baseFilename = NoteStorage.noteFilename(for: date, title: title)
-        let filename = NoteStorage.uniqueFilename(base: baseFilename, in: saveLocation)
-        let url = saveLocation.appendingPathComponent(filename)
-
-        let durationMin = Int(transcript.duration) / 60
-        let durationSec = Int(transcript.duration) % 60
-
-        var frontmatter = """
-        ---
-        date: \(ISO8601DateFormatter().string(from: date))
-        duration: \(durationMin)m \(durationSec)s
-        speakers: \(transcript.speakerCount)
-        """
-
-        if !tags.isEmpty {
-            frontmatter += "\ntags: [\(tags.joined(separator: ", "))]"
-        }
-
-        if let meeting {
-            frontmatter += "\nmeeting: \(meeting.title)"
-            frontmatter += "\nattendees: \(meeting.attendees.joined(separator: ", "))"
-            frontmatter += "\ncalendar_event_id: \(meeting.id)"
-        }
-
-        if let structuringStatus {
-            frontmatter += "\nstructuring_status: \(structuringStatus)"
-        }
-
-        frontmatter += "\nsource: auto\n---"
-
-        let body: String
-        if isStructured {
-            body = content
-        } else {
-            // Fallback: wrap plain transcript in minimal markdown
-            let heading = title.map { "# \($0)\n\n" } ?? ""
-            body = "\(heading)\(content)"
-        }
-
-        let fullContent = "\(frontmatter)\n\n\(body)"
-
-        do {
-            try fullContent.write(to: url, atomically: true, encoding: .utf8)
-        } catch {
-            logger.error("Failed to save auto note: \(error.localizedDescription, privacy: .public)")
-        }
-    }
-
-    // MARK: - Content Extraction Helpers
-
-    /// Extract the text content of a named `## Section` from structured markdown.
-    private func extractSection(named section: String, from content: String) -> String? {
-        let lines = content.components(separatedBy: .newlines)
-        var capturing = false
-        var result: [String] = []
-
-        for line in lines {
-            if line.hasPrefix("## \(section)") {
-                capturing = true
-                continue
-            }
-            if capturing && line.hasPrefix("## ") {
-                break
-            }
-            if capturing {
-                result.append(line)
-            }
-        }
-
-        let text = result.joined(separator: "\n").trimmingCharacters(in: .whitespacesAndNewlines)
-        return text.isEmpty ? nil : text
-    }
-
-    /// Extract topic-level sections from structured content, bumping `##` to `###`.
-    /// Strips the `# Title` heading and `## Transcript` section (we use the full session transcript instead).
-    private func extractTopicSections(from content: String) -> String {
-        let lines = content.components(separatedBy: .newlines)
-        var result: [String] = []
-        var inTranscript = false
-
-        for line in lines {
-            // Skip the top-level title
-            if line.hasPrefix("# ") && !line.hasPrefix("## ") {
-                continue
-            }
-
-            // Skip the Transcript section entirely
-            if line.hasPrefix("## Transcript") {
-                inTranscript = true
-                continue
-            }
-            if inTranscript {
-                // Stop skipping if we hit another ## section (shouldn't happen, but be safe)
-                if line.hasPrefix("## ") {
-                    inTranscript = false
-                } else {
-                    continue
-                }
-            }
-
-            // Bump ## headings to ###
-            if line.hasPrefix("## ") {
-                result.append("#\(line)")  // "## X" becomes "### X"
-            } else {
-                result.append(line)
-            }
-        }
-
-        return result.joined(separator: "\n").trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
     // MARK: - Silence & Duration Monitors

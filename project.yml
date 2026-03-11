@@ -39,3 +39,15 @@ targets:
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/../Frameworks"
     dependencies: []
+
+  FiddleheadTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - path: FiddleheadTests
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.kylefugere.FiddleheadTests
+        GENERATE_INFOPLIST_FILE: true
+    dependencies:
+      - target: Fiddlehead

@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 ### Added
+- Daily document architecture: all meetings for a day are consolidated into a single `YYYY-MM-DD.md` file instead of separate files per recording, optimizing for AI-powered search
+- Running index (`index.md`): master table of contents with every meeting's title, time, duration, and one-line summary for fast cross-day scanning
 - CLAUDE.md skill file auto-placed in notes folder so Claude Code and Cowork can search and understand your notes
 - Automatic multi-meeting splitting: when a recording spans multiple calendar events, each meeting gets its own note with correct metadata
 - Works in both manual recording and auto mode pipelines

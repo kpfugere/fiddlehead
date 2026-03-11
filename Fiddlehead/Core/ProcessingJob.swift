@@ -293,90 +293,29 @@ final class ProcessingJob: ObservableObject, Identifiable {
         structuringStatus: String? = nil,
         meeting: MeetingEvent? = nil
     ) -> URL? {
-        let baseFilename = NoteStorage.noteFilename(for: recordingDate, title: title)
-        let filename = NoteStorage.uniqueFilename(base: baseFilename, in: saveLocation)
-        let url = saveLocation.appendingPathComponent(filename)
-
-        let durationMin = Int(transcript.duration) / 60
-        let durationSec = Int(transcript.duration) % 60
-
-        var frontmatter = """
-        ---
-        date: \(ISO8601DateFormatter().string(from: recordingDate))
-        duration: \(durationMin)m \(durationSec)s
-        speakers: \(transcript.speakerCount)
-        """
-
-        if !tags.isEmpty {
-            frontmatter += "\ntags: [\(tags.joined(separator: ", "))]"
-        }
-
-        if let structuringStatus {
-            frontmatter += "\nstructuring_status: \(structuringStatus)"
-        }
-
-        if let meeting = meeting ?? activeMeeting {
-            frontmatter += "\nmeeting: \(meeting.title)"
-            frontmatter += "\nattendees: \(meeting.attendees.joined(separator: ", "))"
-            frontmatter += "\ncalendar_event_id: \(meeting.id)"
-        }
-
-        frontmatter += "\n---"
-
-        let fullContent = """
-        \(frontmatter)
-
-        \(content)
-        """
-
-        do {
-            try fullContent.write(to: url, atomically: true, encoding: .utf8)
-            logger.info("Note saved: \(filename)")
-            return url
-        } catch {
-            logger.error("Failed to save note: \(error.localizedDescription)")
-            return nil
-        }
+        DailyNoteManager.appendSection(
+            content: content,
+            title: title,
+            transcript: transcript,
+            tags: tags,
+            structuringStatus: structuringStatus,
+            meeting: meeting ?? activeMeeting,
+            recordingDate: recordingDate,
+            speakerName: speakerName,
+            saveLocation: saveLocation
+        )
     }
 
     private func saveFallback(transcript: AssembledTranscript?) -> URL? {
         guard let transcript, !transcript.isEmpty else { return nil }
 
-        let baseFilename = NoteStorage.transcriptFilename(for: recordingDate)
-        let filename = NoteStorage.uniqueFilename(base: baseFilename, in: saveLocation)
-        let url = saveLocation.appendingPathComponent(filename)
-
-        let durationMin = Int(transcript.duration) / 60
-        let durationSec = Int(transcript.duration) % 60
-
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .short
-
-        let content = """
-        ---
-        date: \(ISO8601DateFormatter().string(from: recordingDate))
-        duration: \(durationMin)m \(durationSec)s
-        status: unstructured
-        ---
-
-        # Recording — \(formatter.string(from: recordingDate))
-
-        > Note: This transcript could not be structured automatically.
-
-        ## Transcript
-
-        \(transcript.formatted(speakerName: speakerName))
-        """
-
-        do {
-            try content.write(to: url, atomically: true, encoding: .utf8)
-            logger.info("Fallback transcript saved: \(filename)")
-            return url
-        } catch {
-            logger.error("Failed to save fallback: \(error.localizedDescription)")
-            return nil
-        }
+        return DailyNoteManager.appendFallbackSection(
+            transcript: transcript,
+            recordingDate: recordingDate,
+            speakerName: speakerName,
+            saveLocation: saveLocation,
+            meeting: activeMeeting
+        )
     }
 
     // MARK: - Cleanup
