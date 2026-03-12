@@ -11,17 +11,17 @@ struct AssemblyAIUploadResponse: Codable, Sendable {
 struct AssemblyAITranscriptRequest: Codable, Sendable {
     let audio_url: String
     let speech_models: [String]
+    let language_detection: Bool
     let speaker_labels: Bool?
     let multichannel: Bool?
-    let audio_channels: Int?
 
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(audio_url, forKey: .audio_url)
         try container.encode(speech_models, forKey: .speech_models)
+        try container.encode(language_detection, forKey: .language_detection)
         try container.encodeIfPresent(speaker_labels, forKey: .speaker_labels)
         try container.encodeIfPresent(multichannel, forKey: .multichannel)
-        try container.encodeIfPresent(audio_channels, forKey: .audio_channels)
     }
 }
 

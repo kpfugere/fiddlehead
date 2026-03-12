@@ -37,7 +37,7 @@ final class AssemblyAITranscriptionService: TranscriptionService, Sendable {
 
         // Step 3: Submit transcription job (multichannel if stereo, else speaker diarization)
         let useMultichannel = channels >= 2
-        let transcriptID = try await submitTranscription(audioURL: uploadURL, multichannel: useMultichannel, audioChannels: useMultichannel ? channels : nil)
+        let transcriptID = try await submitTranscription(audioURL: uploadURL, multichannel: useMultichannel)
 
         // Step 4: Poll until completion
         let response = try await pollForCompletion(transcriptID: transcriptID)
@@ -91,25 +91,25 @@ final class AssemblyAITranscriptionService: TranscriptionService, Sendable {
 
     // MARK: - Submit
 
-    private func submitTranscription(audioURL: String, multichannel: Bool = false, audioChannels: Int? = nil) async throws -> String {
+    private func submitTranscription(audioURL: String, multichannel: Bool = false) async throws -> String {
         let requestBody: AssemblyAITranscriptRequest
         if multichannel {
-            // multichannel and speaker_labels are mutually exclusive in AssemblyAI
+            // AssemblyAI now supports multichannel + speaker_labels together
             requestBody = AssemblyAITranscriptRequest(
                 audio_url: audioURL,
-                speech_models: ["universal-2"],
-                speaker_labels: nil,
-                multichannel: true,
-                audio_channels: audioChannels
+                speech_models: ["universal-3-pro", "universal-2"],
+                language_detection: true,
+                speaker_labels: true,
+                multichannel: true
             )
-            logger.info("Submitting multichannel transcription (channels: \(audioChannels ?? 2))")
+            logger.info("Submitting multichannel transcription with speaker labels")
         } else {
             requestBody = AssemblyAITranscriptRequest(
                 audio_url: audioURL,
-                speech_models: ["universal-2"],
+                speech_models: ["universal-3-pro", "universal-2"],
+                language_detection: true,
                 speaker_labels: true,
-                multichannel: nil,
-                audio_channels: nil
+                multichannel: nil
             )
         }
 
@@ -181,7 +181,8 @@ final class AssemblyAITranscriptionService: TranscriptionService, Sendable {
     // MARK: - Assembly
 
     /// Assemble multichannel response into transcript with deterministic speaker labels.
-    /// Channel 1 (index 0) = mic = speaker 0 (user), Channel 2 (index 1) = system = speaker 1 (them).
+    /// Uses channel_label to map channels, builds segments per channel independently,
+    /// then deduplicates overlapping segments (crosstalk) using confidence scores.
     private func assembleMultichannelTranscript(from response: AssemblyAITranscriptResponse, originalDuration: Double) -> AssembledTranscript {
         guard let channels = response.channels, !channels.isEmpty else {
             logger.warning("Multichannel response has no channels — falling back to utterance assembly")
@@ -189,75 +190,147 @@ final class AssemblyAITranscriptionService: TranscriptionService, Sendable {
             return AssembledTranscript(segments: fallback.segments, duration: originalDuration)
         }
 
-        // Collect all words with their speaker (channel index)
-        struct TimedWord {
+        // Map channel_label to speaker ID: "Channel 1" (mic/left) = speaker 0, "Channel 2" (system/right) = speaker 1
+        // Fall back to array index if labels are missing or unexpected
+        for channel in channels {
+            logger.info("AssemblyAI channel: \(channel.channel_label, privacy: .public) — \(channel.words.count) words")
+        }
+
+        struct ChannelSegment {
             let speaker: Int
             let text: String
             let start: Double
             let end: Double
+            let avgConfidence: Double
         }
 
-        var allWords: [TimedWord] = []
-        for (channelIndex, channel) in channels.enumerated() {
-            // AssemblyAI labels channels "Channel 1", "Channel 2", etc.
-            // Channel 1 = first audio channel = mic (left) = speaker 0
-            // Channel 2 = second audio channel = system (right) = speaker 1
-            let speaker = channelIndex
-            for word in channel.words {
-                let text = word.text.trimmingCharacters(in: .whitespacesAndNewlines)
-                guard !text.isEmpty else { continue }
-                allWords.append(TimedWord(
-                    speaker: speaker,
-                    text: text,
-                    start: Double(word.start) / 1000.0,
-                    end: Double(word.end) / 1000.0
-                ))
+        // Step 1: Build utterance-level segments per channel independently.
+        // Words within 1.5s of each other on the same channel form one segment.
+        let gapThreshold = 1.5
+        var allChannelSegments: [ChannelSegment] = []
+
+        for channel in channels {
+            let speaker = speakerForChannelLabel(channel.channel_label, channels: channels)
+            let words = channel.words.filter { !$0.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
+            guard !words.isEmpty else { continue }
+
+            var segStart = Double(words[0].start) / 1000.0
+            var segEnd = Double(words[0].end) / 1000.0
+            var segText = words[0].text.trimmingCharacters(in: .whitespacesAndNewlines)
+            var segConfidenceSum = words[0].confidence
+            var segWordCount = 1
+
+            for i in 1..<words.count {
+                let word = words[i]
+                let wordStart = Double(word.start) / 1000.0
+                let wordEnd = Double(word.end) / 1000.0
+                let wordText = word.text.trimmingCharacters(in: .whitespacesAndNewlines)
+
+                if wordStart - segEnd <= gapThreshold {
+                    // Continue current segment
+                    segText += " " + wordText
+                    segEnd = wordEnd
+                    segConfidenceSum += word.confidence
+                    segWordCount += 1
+                } else {
+                    // Emit segment, start new one
+                    allChannelSegments.append(ChannelSegment(
+                        speaker: speaker, text: segText,
+                        start: segStart, end: segEnd,
+                        avgConfidence: segConfidenceSum / Double(segWordCount)
+                    ))
+                    segStart = wordStart
+                    segEnd = wordEnd
+                    segText = wordText
+                    segConfidenceSum = word.confidence
+                    segWordCount = 1
+                }
+            }
+            allChannelSegments.append(ChannelSegment(
+                speaker: speaker, text: segText,
+                start: segStart, end: segEnd,
+                avgConfidence: segConfidenceSum / Double(segWordCount)
+            ))
+        }
+
+        // Step 2: Deduplicate overlapping segments from different channels (crosstalk).
+        // When segments from different speakers overlap >50% in time, keep the one
+        // with higher average confidence (the channel that actually captured the voice).
+        allChannelSegments.sort { $0.start < $1.start }
+        var deduped: [ChannelSegment] = []
+        var skipIndices: Set<Int> = []
+        var dedupCount = 0
+
+        for i in 0..<allChannelSegments.count {
+            guard !skipIndices.contains(i) else { continue }
+            let seg = allChannelSegments[i]
+
+            // Look ahead for overlapping segments from a different speaker
+            var bestSeg = seg
+            for j in (i + 1)..<allChannelSegments.count {
+                guard !skipIndices.contains(j) else { continue }
+                let other = allChannelSegments[j]
+                if other.start >= seg.end { break } // no more overlap possible
+                guard other.speaker != seg.speaker else { continue }
+
+                // Calculate overlap ratio
+                let overlapStart = max(seg.start, other.start)
+                let overlapEnd = min(seg.end, other.end)
+                let overlap = max(0, overlapEnd - overlapStart)
+                let shorterDuration = min(seg.end - seg.start, other.end - other.start)
+                guard shorterDuration > 0 else { continue }
+                let overlapRatio = overlap / shorterDuration
+
+                if overlapRatio > 0.5 {
+                    // Crosstalk — keep the segment with higher confidence
+                    dedupCount += 1
+                    if other.avgConfidence > bestSeg.avgConfidence {
+                        skipIndices.insert(i)
+                        bestSeg = other
+                    }
+                    skipIndices.insert(j)
+                }
+            }
+            if !skipIndices.contains(i) {
+                deduped.append(bestSeg)
+            } else if bestSeg.start != seg.start || bestSeg.end != seg.end {
+                // The "other" segment won — add it instead
+                deduped.append(bestSeg)
             }
         }
 
-        // Sort by start time
-        allWords.sort { $0.start < $1.start }
-
-        guard !allWords.isEmpty else {
+        guard !deduped.isEmpty else {
             return AssembledTranscript(segments: [], duration: originalDuration, multichannelLabeled: true)
         }
 
-        // Group consecutive same-speaker words into segments
-        var segments: [TranscriptSegment] = []
-        var currentSpeaker = allWords[0].speaker
-        var currentText = allWords[0].text
-        var currentStart = allWords[0].start
-        var currentEnd = allWords[0].end
-
-        for i in 1..<allWords.count {
-            let word = allWords[i]
-            if word.speaker == currentSpeaker {
-                currentText += " " + word.text
-                currentEnd = word.end
-            } else {
-                segments.append(TranscriptSegment(
-                    speaker: currentSpeaker,
-                    text: currentText,
-                    startTime: currentStart,
-                    endTime: currentEnd
-                ))
-                currentSpeaker = word.speaker
-                currentText = word.text
-                currentStart = word.start
-                currentEnd = word.end
-            }
+        // Step 3: Convert to TranscriptSegments and merge consecutive same-speaker
+        let segments = deduped.map { seg in
+            TranscriptSegment(speaker: seg.speaker, text: seg.text, startTime: seg.start, endTime: seg.end)
         }
-        segments.append(TranscriptSegment(
-            speaker: currentSpeaker,
-            text: currentText,
-            startTime: currentStart,
-            endTime: currentEnd
-        ))
-
         let merged = segments.mergingConsecutiveSpeakers()
-        logger.info("Multichannel assembly: \(channels.count) channels → \(merged.count) segments")
+
+        logger.info("Multichannel assembly: \(channels.count) channels → \(merged.count) segments (\(dedupCount) crosstalk segments removed)")
 
         return AssembledTranscript(segments: merged, duration: originalDuration, multichannelLabeled: true)
+    }
+
+    /// Map AssemblyAI channel_label to speaker ID.
+    /// "Channel 1" = left audio = mic = speaker 0 (user).
+    /// "Channel 2" = right audio = system = speaker 1 (them).
+    /// Falls back to array index if labels are unexpected.
+    private func speakerForChannelLabel(_ label: String, channels: [AssemblyAIChannel]) -> Int {
+        // Parse the channel number from labels like "Channel 1", "Channel 2"
+        let digits = label.filter(\.isNumber)
+        if let channelNumber = Int(digits) {
+            // Channel 1 = left = mic = speaker 0, Channel 2 = right = system = speaker 1
+            return channelNumber - 1
+        }
+        // Fallback: use position in array
+        if let idx = channels.firstIndex(where: { $0.channel_label == label }) {
+            logger.warning("Unexpected channel label '\(label, privacy: .public)' — using array index \(idx)")
+            return idx
+        }
+        return 0
     }
 
     private func assembleTranscript(from response: AssemblyAITranscriptResponse) -> AssembledTranscript {
