@@ -4,6 +4,7 @@ import Security
 enum KeychainKey: String {
     case deepgramAPIKey = "deepgram_api_key"
     case claudeAPIKey = "claude_api_key"
+    case licenseKey = "license_key"
 }
 
 enum KeychainError: Error {

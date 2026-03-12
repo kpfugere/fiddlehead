@@ -61,6 +61,13 @@ final class RecordingPipeline: ObservableObject {
         }
         guard let settings else { return }
 
+        // Check license / free tier limit
+        guard LicenseManager.shared.canRecord else {
+            state = .error(message: "Free recording limit reached — upgrade to continue")
+            resetAfterDelay()
+            return
+        }
+
         // Check microphone permission first
         let micStatus = AVCaptureDevice.authorizationStatus(for: .audio)
         guard micStatus == .authorized else {
@@ -182,6 +189,7 @@ final class RecordingPipeline: ObservableObject {
             self.activeJobs.removeAll { $0.id == job.id }
             if noteURL != nil {
                 self.savedNoteCount += 1
+                LicenseManager.shared.incrementRecordingCount()
             }
             logger.info("Job finished — \(self.activeJobs.count) jobs remaining")
         }

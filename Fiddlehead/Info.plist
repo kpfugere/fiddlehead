@@ -32,5 +32,16 @@
 	<string>Fonts</string>
 	<key>NSCalendarsUsageDescription</key>
 	<string>Fiddlehead reads your calendar to detect upcoming meetings and offer to take notes automatically.</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.kylefugere.Fiddlehead</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>fiddlehead</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>

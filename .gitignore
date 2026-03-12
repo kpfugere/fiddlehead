@@ -26,3 +26,4 @@ Fiddlehead.xcodeproj/
 # SVG previews (design iterations)
 *_previews.svg
 *_variants.svg
+.wrangler/

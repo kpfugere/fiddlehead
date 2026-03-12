@@ -19,6 +19,7 @@ final class SettingsWindowController {
 
         let view = SettingsView()
             .environmentObject(settings)
+            .environmentObject(LicenseManager.shared)
 
         let hostingController = NSHostingController(rootView: view)
 
