@@ -1,7 +1,7 @@
 import AVFoundation
 import Foundation
 import os.log
-import ScreenCaptureKit
+@preconcurrency import ScreenCaptureKit
 
 private let logger = Logger(subsystem: "com.kylefugere.Fiddlehead", category: "Pipeline")
 
