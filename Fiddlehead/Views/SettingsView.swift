@@ -316,7 +316,7 @@ struct SettingsView: View {
 
                 // MARK: - About
                 settingsSection("about") {
-                    Text("fiddlehead v0.1.0")
+                    Text("fiddlehead v\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "?")")
                         .font(FiddleheadTheme.mono(11))
                         .foregroundStyle(FiddleheadTheme.textSecondary)
                 }

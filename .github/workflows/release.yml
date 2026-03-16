@@ -1,0 +1,198 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-and-release:
+    runs-on: macos-15
+    permissions:
+      contents: write
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_16.2.app/Contents/Developer
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Extract version from tag
+        id: version
+        run: |
+          TAG="${GITHUB_REF#refs/tags/v}"
+          echo "version=$TAG" >> "$GITHUB_OUTPUT"
+          echo "tag=v$TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      - name: Install Apple certificate
+        env:
+          APPLE_CERTIFICATE_BASE64: ${{ secrets.APPLE_CERTIFICATE_BASE64 }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+        run: |
+          KEYCHAIN_PATH="$RUNNER_TEMP/app-signing.keychain-db"
+          KEYCHAIN_PASSWORD="$(openssl rand -base64 32)"
+
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+
+          CERT_PATH="$RUNNER_TEMP/certificate.p12"
+          echo "$APPLE_CERTIFICATE_BASE64" | base64 --decode > "$CERT_PATH"
+          security import "$CERT_PATH" \
+            -P "$APPLE_CERTIFICATE_PASSWORD" \
+            -A \
+            -t cert \
+            -f pkcs12 \
+            -k "$KEYCHAIN_PATH"
+          security set-key-partition-list -S apple-tool:,apple: \
+            -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security list-keychains -d user -s "$KEYCHAIN_PATH" login.keychain-db
+
+      - name: Resolve SPM dependencies
+        run: |
+          xcodebuild -resolvePackageDependencies \
+            -project Fiddlehead.xcodeproj \
+            -scheme Fiddlehead
+
+      - name: Build release archive
+        env:
+          DEVELOPMENT_TEAM: ${{ secrets.APPLE_DEVELOPER_TEAM_ID }}
+        run: |
+          xcodebuild -project Fiddlehead.xcodeproj \
+            -scheme Fiddlehead \
+            -configuration Release \
+            -archivePath "$RUNNER_TEMP/Fiddlehead.xcarchive" \
+            DEVELOPMENT_TEAM="$DEVELOPMENT_TEAM" \
+            archive
+
+      - name: Export archive
+        env:
+          DEVELOPMENT_TEAM: ${{ secrets.APPLE_DEVELOPER_TEAM_ID }}
+        run: |
+          cat > "$RUNNER_TEMP/export-options.plist" << PLIST
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+            "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key>
+            <string>developer-id</string>
+            <key>teamID</key>
+            <string>${DEVELOPMENT_TEAM}</string>
+            <key>signingStyle</key>
+            <string>manual</string>
+            <key>signingCertificate</key>
+            <string>Developer ID Application</string>
+          </dict>
+          </plist>
+          PLIST
+
+          xcodebuild -exportArchive \
+            -archivePath "$RUNNER_TEMP/Fiddlehead.xcarchive" \
+            -exportPath "$RUNNER_TEMP/export" \
+            -exportOptionsPlist "$RUNNER_TEMP/export-options.plist"
+
+      - name: Create DMG
+        run: |
+          APP_PATH="$RUNNER_TEMP/export/Fiddlehead.app"
+          DMG_DIR="$(mktemp -d)"
+          DMG_NAME="Fiddlehead-${{ steps.version.outputs.version }}.dmg"
+
+          cp -R "$APP_PATH" "$DMG_DIR/Fiddlehead.app"
+          ln -s /Applications "$DMG_DIR/Applications"
+
+          hdiutil create \
+            -volname "Fiddlehead" \
+            -srcfolder "$DMG_DIR" \
+            -ov -format UDZO \
+            "$RUNNER_TEMP/$DMG_NAME"
+
+          rm -rf "$DMG_DIR"
+          echo "DMG_PATH=$RUNNER_TEMP/$DMG_NAME" >> "$GITHUB_ENV"
+          echo "DMG_NAME=$DMG_NAME" >> "$GITHUB_ENV"
+
+      - name: Notarize DMG
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+          APPLE_DEVELOPER_TEAM_ID: ${{ secrets.APPLE_DEVELOPER_TEAM_ID }}
+        run: |
+          xcrun notarytool submit "$DMG_PATH" \
+            --apple-id "$APPLE_ID" \
+            --password "$APPLE_APP_SPECIFIC_PASSWORD" \
+            --team-id "$APPLE_DEVELOPER_TEAM_ID" \
+            --wait
+
+          xcrun stapler staple "$DMG_PATH"
+
+      - name: Generate Sparkle signature
+        env:
+          SPARKLE_PRIVATE_KEY: ${{ secrets.SPARKLE_PRIVATE_KEY }}
+        run: |
+          # Download Sparkle tools
+          SPARKLE_VERSION="2.6.4"
+          curl -sL -o /tmp/sparkle.tar.xz \
+            "https://github.com/sparkle-project/Sparkle/releases/download/${SPARKLE_VERSION}/Sparkle-${SPARKLE_VERSION}.tar.xz"
+          mkdir -p /tmp/sparkle
+          tar -xf /tmp/sparkle.tar.xz -C /tmp/sparkle
+
+          # Sign the DMG with Sparkle's EdDSA key
+          SIGNATURE=$(echo "$SPARKLE_PRIVATE_KEY" | \
+            /tmp/sparkle/bin/sign_update "$DMG_PATH" --ed-key-file -)
+          echo "SPARKLE_SIGNATURE=$SIGNATURE" >> "$GITHUB_ENV"
+
+          DMG_SIZE=$(stat -f%z "$DMG_PATH")
+          echo "DMG_SIZE=$DMG_SIZE" >> "$GITHUB_ENV"
+
+      - name: Extract changelog for this version
+        id: changelog
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          NOTES=$(sed -n "/## \[$VERSION\]/,/## \[/p" CHANGELOG.md | head -n -1 | tail -n +2)
+          echo "notes<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$NOTES" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "Fiddlehead v${{ steps.version.outputs.version }}"
+          body: |
+            ${{ steps.changelog.outputs.notes }}
+
+            ---
+            **Install:** Download the DMG, open it, and drag Fiddlehead to Applications.
+          files: ${{ env.DMG_PATH }}
+          draft: false
+          prerelease: false
+
+      - name: Update appcast.xml
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          TAG="${{ steps.version.outputs.tag }}"
+          DMG_URL="https://github.com/${{ github.repository }}/releases/download/${TAG}/${DMG_NAME}"
+          PUB_DATE=$(date -R)
+
+          ITEM="    <item>\n      <title>Version ${VERSION}</title>\n      <pubDate>${PUB_DATE}</pubDate>\n      <sparkle:version>${VERSION}</sparkle:version>\n      <sparkle:shortVersionString>${VERSION}</sparkle:shortVersionString>\n      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>\n      <description><![CDATA[${{ steps.changelog.outputs.notes }}]]></description>\n      <enclosure\n        url=\"${DMG_URL}\"\n        ${SPARKLE_SIGNATURE}\n        length=\"${DMG_SIZE}\"\n        type=\"application/octet-stream\" />\n    </item>"
+
+          # Insert new item before </channel>
+          sed -i '' "s|</channel>|${ITEM}\n  </channel>|" website/public/appcast.xml
+
+      - name: Commit and push appcast
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add website/public/appcast.xml
+          git commit -m "release: update appcast for v${{ steps.version.outputs.version }}" || true
+          git push origin HEAD:main
+
+      - name: Cleanup keychain
+        if: always()
+        run: |
+          security delete-keychain "$RUNNER_TEMP/app-signing.keychain-db" || true

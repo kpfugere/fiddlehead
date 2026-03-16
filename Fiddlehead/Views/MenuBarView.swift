@@ -5,6 +5,7 @@ struct MenuBarView: View {
     @EnvironmentObject var settings: AppSettings
     @EnvironmentObject var autoMode: AutoModeController
     @EnvironmentObject var licenseManager: LicenseManager
+    @EnvironmentObject var updateController: UpdateController
 
     var openSettingsAction: () -> Void
 
@@ -306,6 +307,15 @@ struct MenuBarView: View {
                             .font(FiddleheadTheme.mono(12))
                     }
                     .foregroundStyle(FiddleheadTheme.textSecondary)
+                }
+                .buttonStyle(.plain)
+
+                Spacer()
+
+                Button(action: { updateController.checkForUpdates() }) {
+                    Text("check for updates")
+                        .font(FiddleheadTheme.mono(12))
+                        .foregroundStyle(FiddleheadTheme.textSecondary)
                 }
                 .buttonStyle(.plain)
 

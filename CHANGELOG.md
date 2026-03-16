@@ -6,7 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
+
+## [0.2.0] - 2026-03-16
 ### Added
+- Auto-update support via Sparkle — the app checks for updates automatically and offers in-app install
+- "Check for updates" button in the menu bar footer
+- Automated release pipeline: push a version tag and GitHub Actions builds, signs, notarizes, and publishes a DMG to GitHub Releases
+- Dynamic version display in Settings (reads from bundle instead of hardcoded)
 - Daily document architecture: all meetings for a day are consolidated into a single `YYYY-MM-DD.md` file instead of separate files per recording, optimizing for AI-powered search
 - Running index (`index.md`): master table of contents with every meeting's title, time, duration, and one-line summary for fast cross-day scanning
 - CLAUDE.md skill file auto-placed in notes folder so Claude Code and Cowork can search and understand your notes

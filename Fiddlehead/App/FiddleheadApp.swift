@@ -9,6 +9,7 @@ struct FiddleheadApp: App {
     @StateObject private var autoMode = AutoModeController()
     @StateObject private var coordinator = AppCoordinator()
     @StateObject private var licenseManager = LicenseManager.shared
+    @StateObject private var updateController = UpdateController()
 
     private let onboardingController = OnboardingWindowController()
     private let settingsController = SettingsWindowController()
@@ -20,6 +21,7 @@ struct FiddleheadApp: App {
                 .environmentObject(settings)
                 .environmentObject(autoMode)
                 .environmentObject(licenseManager)
+                .environmentObject(updateController)
                 .onAppear {
                     settings.migrateFromKeychainIfNeeded()
                     pipeline.configure(settings: settings)
