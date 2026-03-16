@@ -17,8 +17,8 @@ final class ProcessingJob: ObservableObject, Identifiable {
     // Snapshotted inputs — everything needed to process without touching AppSettings
     private let audioURL: URL
     private let openAIAPIKey: String
-    private let transcriptionProvider: TranscriptionProvider
     private let assemblyAIAPIKey: String
+    private let speechModels: [String]
     private let speakerName: String?
     private let saveLocation: URL
     private let keepAudioEnabled: Bool
@@ -34,8 +34,8 @@ final class ProcessingJob: ObservableObject, Identifiable {
     init(
         audioURL: URL,
         openAIAPIKey: String,
-        transcriptionProvider: TranscriptionProvider,
         assemblyAIAPIKey: String,
+        speechModels: [String] = ["universal-2"],
         speakerName: String?,
         saveLocation: URL,
         keepAudioEnabled: Bool,
@@ -47,8 +47,8 @@ final class ProcessingJob: ObservableObject, Identifiable {
     ) {
         self.audioURL = audioURL
         self.openAIAPIKey = openAIAPIKey
-        self.transcriptionProvider = transcriptionProvider
         self.assemblyAIAPIKey = assemblyAIAPIKey
+        self.speechModels = speechModels
         self.speakerName = speakerName
         self.saveLocation = saveLocation
         self.keepAudioEnabled = keepAudioEnabled
@@ -85,24 +85,17 @@ final class ProcessingJob: ObservableObject, Identifiable {
             return
         }
 
-        if transcriptionProvider == .assemblyai {
-            guard !assemblyAIAPIKey.isEmpty else {
-                logger.warning("AssemblyAI API key empty — cannot process")
-                errorMessage = "No AssemblyAI API key"
-                cleanupTempAudio()
-                onComplete?(nil, nil)
-                return
-            }
+        guard !assemblyAIAPIKey.isEmpty else {
+            logger.warning("AssemblyAI API key empty — cannot process")
+            errorMessage = "No AssemblyAI API key"
+            cleanupTempAudio()
+            onComplete?(nil, nil)
+            return
         }
 
-        logger.info("Using transcription provider: \(String(describing: self.transcriptionProvider))")
+        logger.info("Using AssemblyAI transcription")
 
-        let service: TranscriptionService = switch transcriptionProvider {
-        case .openai:
-            OpenAITranscriptionService(apiKey: openAIAPIKey)
-        case .assemblyai:
-            AssemblyAITranscriptionService(apiKey: assemblyAIAPIKey)
-        }
+        let service: TranscriptionService = AssemblyAITranscriptionService(apiKey: assemblyAIAPIKey, speechModels: speechModels)
 
         do {
             transcript = try await service.transcribe(
@@ -114,15 +107,7 @@ final class ProcessingJob: ObservableObject, Identifiable {
             logger.error("Transcription failed: \(error.localizedDescription, privacy: .public)")
 
             let userMessage: String
-            if let apiError = error as? OpenAITranscriptionError,
-               case .apiError(let statusCode, _) = apiError {
-                switch statusCode {
-                case 401: userMessage = "Invalid OpenAI API key"
-                case 429: userMessage = "OpenAI quota exceeded — add credits"
-                case 413: userMessage = "Audio too large for OpenAI"
-                default: userMessage = "OpenAI error (\(statusCode))"
-                }
-            } else if let apiError = error as? AssemblyAITranscriptionError {
+            if let apiError = error as? AssemblyAITranscriptionError {
                 switch apiError {
                 case .uploadFailed(let code, _), .apiError(let code, _):
                     switch code {

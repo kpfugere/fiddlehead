@@ -15,8 +15,7 @@ final class LicenseManager: ObservableObject {
     static let shared = LicenseManager()
     static let freeRecordingLimit = 10
 
-    // TODO: Replace with your actual LemonSqueezy checkout URL
-    static let checkoutURL = URL(string: "https://STORE.lemonsqueezy.com/checkout/buy/PRODUCT_ID")!
+    static let checkoutURL = URL(string: "https://store.fiddleheadai.com/checkout/buy/18ff7027-7060-4a0d-9fc3-099c2df5230c")!
 
     @AppStorage("totalRecordingCount") var totalRecordingCount: Int = 0
     @AppStorage("licenseStatus") private var licenseStatusRaw: String = LicenseStatus.free.rawValue

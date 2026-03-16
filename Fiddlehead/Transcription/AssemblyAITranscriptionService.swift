@@ -10,12 +10,14 @@ private let logger = Logger(subsystem: "com.kylefugere.Fiddlehead", category: "A
 /// We still strip silence and compress to M4A to reduce upload size and billing.
 final class AssemblyAITranscriptionService: TranscriptionService, Sendable {
     private let apiKey: String
+    private let speechModels: [String]
     private let maxRetries: Int
     private static let pollInterval: Duration = .seconds(3)
     private static let maxPollTime: Duration = .seconds(600) // 10 minutes
 
-    init(apiKey: String, maxRetries: Int = 3) {
+    init(apiKey: String, speechModels: [String] = ["universal-2"], maxRetries: Int = 3) {
         self.apiKey = apiKey
+        self.speechModels = speechModels
         self.maxRetries = maxRetries
     }
 
@@ -97,16 +99,16 @@ final class AssemblyAITranscriptionService: TranscriptionService, Sendable {
             // AssemblyAI now supports multichannel + speaker_labels together
             requestBody = AssemblyAITranscriptRequest(
                 audio_url: audioURL,
-                speech_models: ["universal-3-pro", "universal-2"],
+                speech_models: speechModels,
                 language_detection: true,
                 speaker_labels: true,
                 multichannel: true
             )
-            logger.info("Submitting multichannel transcription with speaker labels")
+            logger.info("Submitting multichannel transcription with speaker labels, models: \(self.speechModels, privacy: .public)")
         } else {
             requestBody = AssemblyAITranscriptRequest(
                 audio_url: audioURL,
-                speech_models: ["universal-3-pro", "universal-2"],
+                speech_models: speechModels,
                 language_detection: true,
                 speaker_labels: true,
                 multichannel: nil

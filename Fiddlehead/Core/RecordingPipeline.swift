@@ -7,7 +7,7 @@ private let logger = Logger(subsystem: "com.kylefugere.Fiddlehead", category: "P
 
 /// Central orchestrator for the record → transcribe → structure → save pipeline.
 /// Audio is always saved to a file during recording. When recording stops,
-/// the audio file is sent to OpenAI's transcription API for diarized transcription,
+/// the audio file is sent to AssemblyAI for diarized transcription,
 /// then structured via OpenAI and saved as a markdown note.
 @MainActor
 final class RecordingPipeline: ObservableObject {
@@ -106,7 +106,7 @@ final class RecordingPipeline: ObservableObject {
         let audioStream = audioCaptureManager.prepareStream()
 
         // Use stereo interleave when AssemblyAI multichannel is applicable
-        let wantStereo = settings.systemAudioEnabled && settings.transcriptionProvider == .assemblyai
+        let wantStereo = settings.systemAudioEnabled
 
         do {
             try audioCaptureManager.startCapture(
@@ -172,8 +172,8 @@ final class RecordingPipeline: ObservableObject {
         let job = ProcessingJob(
             audioURL: audioURL,
             openAIAPIKey: settings.openAIAPIKey,
-            transcriptionProvider: settings.transcriptionProvider,
             assemblyAIAPIKey: settings.assemblyAIAPIKey,
+            speechModels: settings.assemblyAISpeechModels,
             speakerName: settings.speakerName.isEmpty ? nil : settings.speakerName,
             saveLocation: settings.saveLocation,
             keepAudioEnabled: settings.keepAudioEnabled,

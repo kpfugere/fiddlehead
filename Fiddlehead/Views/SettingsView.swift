@@ -174,38 +174,11 @@ struct SettingsView: View {
                     }
                 }
 
-                // MARK: - Transcription Provider
-                settingsSection("transcription") {
-                    VStack(alignment: .leading, spacing: 8) {
-                        Picker("provider", selection: Binding(
-                            get: { settings.transcriptionProvider },
-                            set: { settings.transcriptionProvider = $0 }
-                        )) {
-                            ForEach(TranscriptionProvider.allCases) { provider in
-                                Text(provider.displayName).tag(provider)
-                            }
-                        }
-                        .pickerStyle(.segmented)
-                        .labelsHidden()
-
-                        switch settings.transcriptionProvider {
-                        case .openai:
-                            Text("uses gpt-4o-transcribe-diarize — $0.006/min")
-                                .font(FiddleheadTheme.mono(10))
-                                .foregroundStyle(FiddleheadTheme.textSecondary)
-                        case .assemblyai:
-                            Text("uses universal model with speaker diarization — $0.003/min")
-                                .font(FiddleheadTheme.mono(10))
-                                .foregroundStyle(FiddleheadTheme.textSecondary)
-                        }
-                    }
-                }
-
                 // MARK: - API Keys
                 settingsSection("api keys") {
                     VStack(alignment: .leading, spacing: 12) {
                         apiKeyField(
-                            label: "openai",
+                            label: "openai — note structuring",
                             key: $openAIKey,
                             isVisible: $showOpenAIKey,
                             edited: $openAIEdited,
@@ -213,21 +186,35 @@ struct SettingsView: View {
                             onCommit: { settings.openAIAPIKey = openAIKey }
                         )
 
-                        Text("openai is always required for note structuring\(settings.transcriptionProvider == .openai ? " and transcription" : "").")
-                            .font(FiddleheadTheme.mono(10))
-                            .foregroundStyle(FiddleheadTheme.textSecondary)
+                        Divider()
 
-                        if settings.transcriptionProvider == .assemblyai {
-                            Divider()
+                        apiKeyField(
+                            label: "assemblyai — transcription",
+                            key: $assemblyAIKey,
+                            isVisible: $showAssemblyAIKey,
+                            edited: $assemblyAIEdited,
+                            realKey: settings.assemblyAIAPIKey,
+                            onCommit: { settings.assemblyAIAPIKey = assemblyAIKey }
+                        )
 
-                            apiKeyField(
-                                label: "assemblyai",
-                                key: $assemblyAIKey,
-                                isVisible: $showAssemblyAIKey,
-                                edited: $assemblyAIEdited,
-                                realKey: settings.assemblyAIAPIKey,
-                                onCommit: { settings.assemblyAIAPIKey = assemblyAIKey }
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("speech model")
+                                .font(FiddleheadTheme.mono(11, weight: .medium))
+                                .foregroundStyle(FiddleheadTheme.textPrimary)
+
+                            Picker("", selection: $settings.assemblyAISpeechModel) {
+                                Text("universal-2").tag("universal-2")
+                                Text("universal-3-pro").tag("universal-3-pro")
+                            }
+                            .pickerStyle(.segmented)
+                            .labelsHidden()
+
+                            Text(settings.assemblyAISpeechModel == "universal-3-pro"
+                                ? "higher accuracy for en, es, pt, fr, de, it. falls back to universal-2 for other languages. costs more."
+                                : "supports 99 languages at standard pricing."
                             )
+                                .font(FiddleheadTheme.mono(10))
+                                .foregroundStyle(FiddleheadTheme.textSecondary)
                         }
                     }
                 }

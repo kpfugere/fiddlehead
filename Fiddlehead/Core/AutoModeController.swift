@@ -107,7 +107,7 @@ final class AutoModeController: ObservableObject {
         let audioStream = audioCaptureManager.prepareStream()
 
         // Use stereo interleave when AssemblyAI multichannel is applicable
-        let wantStereo = settings.systemAudioEnabled && settings.transcriptionProvider == .assemblyai
+        let wantStereo = settings.systemAudioEnabled
 
         do {
             try audioCaptureManager.startCapture(
@@ -160,8 +160,8 @@ final class AutoModeController: ObservableObject {
         let audioURL = audioCaptureManager.savedAudioURL
         let recordingDate = recordingStartDate ?? Date()
         let apiKey = settings?.openAIAPIKey ?? ""
-        let transcriptionProvider = settings?.transcriptionProvider ?? .openai
         let assemblyAIAPIKey = settings?.assemblyAIAPIKey ?? ""
+        let speechModels = settings?.assemblyAISpeechModels ?? ["universal-2"]
         let speakerName = settings?.speakerName ?? ""
         let saveLocation = settings?.saveLocation
         let audioToCleanup = tempAudioURL
@@ -179,8 +179,8 @@ final class AutoModeController: ObservableObject {
                 audioURL: audioURL,
                 recordingDate: recordingDate,
                 apiKey: apiKey,
-                transcriptionProvider: transcriptionProvider,
                 assemblyAIAPIKey: assemblyAIAPIKey,
+                speechModels: speechModels,
                 speakerName: speakerName,
                 saveLocation: saveLocation,
                 audioToCleanup: audioToCleanup,
@@ -204,8 +204,8 @@ final class AutoModeController: ObservableObject {
         audioURL: URL?,
         recordingDate: Date,
         apiKey: String,
-        transcriptionProvider: TranscriptionProvider,
         assemblyAIAPIKey: String,
+        speechModels: [String],
         speakerName: String,
         saveLocation: URL?,
         audioToCleanup: URL?,
@@ -232,18 +232,13 @@ final class AutoModeController: ObservableObject {
         let resolvedSpeakerName = speakerName.isEmpty ? nil : speakerName
 
         // Step 1: Transcribe
-        if transcriptionProvider == .assemblyai && assemblyAIAPIKey.isEmpty {
-            logger.warning("AssemblyAI selected but no API key — discarding auto recording")
+        if assemblyAIAPIKey.isEmpty {
+            logger.warning("No AssemblyAI API key — discarding auto recording")
             if let audioToCleanup { try? FileManager.default.removeItem(at: audioToCleanup) }
             return
         }
 
-        let service: TranscriptionService = switch transcriptionProvider {
-        case .openai:
-            OpenAITranscriptionService(apiKey: apiKey)
-        case .assemblyai:
-            AssemblyAITranscriptionService(apiKey: assemblyAIAPIKey)
-        }
+        let service: TranscriptionService = AssemblyAITranscriptionService(apiKey: assemblyAIAPIKey, speechModels: speechModels)
         let transcript: AssembledTranscript
 
         do {

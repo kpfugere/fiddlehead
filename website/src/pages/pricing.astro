@@ -1,0 +1,313 @@
+---
+import Base from '../layouts/Base.astro';
+import Footer from '../components/Footer.astro';
+
+const checkoutUrl = 'https://store.fiddleheadai.com/checkout/buy/18ff7027-7060-4a0d-9fc3-099c2df5230c';
+
+const features = [
+  { name: 'mic + system audio capture', free: true, pro: true },
+  { name: 'speaker diarization', free: true, pro: true },
+  { name: 'ai-structured markdown notes', free: true, pro: true },
+  { name: 'auto mode (voice activity detection)', free: true, pro: true },
+  { name: 'calendar-aware recording', free: true, pro: true },
+  { name: 'local files — no cloud lock-in', free: true, pro: true },
+  { name: 'recordings', free: '10', pro: 'unlimited' },
+];
+
+const faqs = [
+  {
+    q: 'what happens after 10 recordings?',
+    a: 'fiddlehead will prompt you to unlock with a license key. your existing notes are always accessible — you just can\'t create new recordings until you upgrade.',
+  },
+  {
+    q: 'how do i activate my license?',
+    a: 'after purchasing, you\'ll receive a license key via email. enter it in fiddlehead\'s settings or use the activation prompt. it takes about 5 seconds.',
+  },
+  {
+    q: 'can i use it on multiple macs?',
+    a: 'yes — each license supports up to 3 machines. perfect for a work laptop, personal mac, and a desktop.',
+  },
+  {
+    q: 'is there a subscription?',
+    a: 'no. it\'s a one-time payment. you own the license forever, including all future updates.',
+  },
+  {
+    q: 'what about refunds?',
+    a: 'if fiddlehead doesn\'t work for you, reach out within 14 days for a full refund. no questions asked.',
+  },
+];
+---
+
+<Base
+  title="pricing — fiddlehead"
+  description="unlock unlimited meeting transcriptions with fiddlehead. $29 one-time payment, no subscription."
+>
+  <nav class="pricing-nav">
+    <div class="pricing-nav-inner">
+      <a href="/" class="pricing-nav-logo" aria-label="Back to home">
+        <img src="/images/frog-icon.svg" alt="" width="28" height="21" />
+        <span class="pricing-nav-name">fiddlehead</span>
+      </a>
+    </div>
+  </nav>
+
+  <main>
+    <section class="pricing-hero">
+      <div class="pricing-hero-content hero-enter hero-enter-1">
+        <h1 class="heading-lg">simple pricing. no surprises.</h1>
+        <p class="subhead pricing-sub">
+          start free with 10 recordings. upgrade once, use forever.
+        </p>
+      </div>
+    </section>
+
+    <section class="pricing-cards-section">
+      <div class="pricing-grid">
+        <div class="card pricing-card hero-enter hero-enter-2">
+          <div class="pricing-card-header">
+            <h2 class="heading-md">free</h2>
+            <div class="pricing-price">
+              <span class="pricing-amount">$0</span>
+            </div>
+            <p class="pricing-desc">try fiddlehead with no commitment</p>
+          </div>
+          <ul class="pricing-features">
+            {features.map(f => (
+              <li class="pricing-feature">
+                <span class={`pricing-check ${f.free === true ? 'check-yes' : 'check-limit'}`}>
+                  {f.free === true ? '✓' : f.free}
+                </span>
+                <span>{f.name}</span>
+              </li>
+            ))}
+          </ul>
+          <a href="/" class="btn-secondary pricing-cta">download</a>
+        </div>
+
+        <div class="card pricing-card pricing-card-pro hero-enter hero-enter-3">
+          <div class="pricing-badge">one-time</div>
+          <div class="pricing-card-header">
+            <h2 class="heading-md">pro</h2>
+            <div class="pricing-price">
+              <span class="pricing-amount">$29</span>
+            </div>
+            <p class="pricing-desc">unlimited recordings, forever</p>
+          </div>
+          <ul class="pricing-features">
+            {features.map(f => (
+              <li class="pricing-feature">
+                <span class={`pricing-check ${f.pro === true ? 'check-yes' : 'check-unlimited'}`}>
+                  {f.pro === true ? '✓' : f.pro}
+                </span>
+                <span>{f.name}</span>
+              </li>
+            ))}
+          </ul>
+          <a href={checkoutUrl} class="btn-primary pricing-cta">buy fiddlehead</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="pricing-faq">
+      <h2 class="heading-lg hero-enter hero-enter-4">questions</h2>
+      <div class="faq-grid hero-enter hero-enter-5">
+        {faqs.map(faq => (
+          <div class="faq-item">
+            <h3 class="faq-q">{faq.q}</h3>
+            <p class="faq-a">{faq.a}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Base>
+
+<style>
+  /* nav */
+  .pricing-nav {
+    border-bottom: 1px solid var(--border);
+    padding: 0 var(--space-xl);
+  }
+  .pricing-nav-inner {
+    max-width: 1080px;
+    margin: 0 auto;
+    height: 52px;
+    display: flex;
+    align-items: center;
+  }
+  .pricing-nav-logo {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    color: var(--text-primary);
+  }
+  .pricing-nav-logo:hover {
+    color: var(--accent);
+  }
+  .pricing-nav-name {
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  /* hero */
+  .pricing-hero {
+    padding: var(--space-3xl) var(--space-xl) var(--space-2xl);
+    text-align: center;
+    display: flex;
+    justify-content: center;
+  }
+  .pricing-hero-content {
+    max-width: 600px;
+  }
+  .pricing-sub {
+    margin-top: var(--space-lg);
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* cards grid */
+  .pricing-cards-section {
+    padding: 0 var(--space-xl) var(--space-3xl);
+    max-width: 820px;
+    margin: 0 auto;
+  }
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-xl);
+  }
+
+  /* card */
+  .pricing-card {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    padding: var(--space-xl);
+  }
+  .pricing-card-pro {
+    border-color: var(--accent);
+    box-shadow: 0 0 30px var(--glow-accent);
+  }
+
+  .pricing-badge {
+    position: absolute;
+    top: calc(-1 * var(--space-sm) - 2px);
+    right: var(--space-lg);
+    background: var(--accent);
+    color: var(--bg);
+    font-size: 11px;
+    font-weight: 500;
+    padding: 2px 10px;
+    border-radius: var(--radius);
+  }
+
+  .pricing-card-header {
+    margin-bottom: var(--space-xl);
+  }
+
+  .pricing-price {
+    margin: var(--space-sm) 0;
+  }
+  .pricing-amount {
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+  .pricing-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+
+  /* features */
+  .pricing-features {
+    list-style: none;
+    flex: 1;
+    margin-bottom: var(--space-xl);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+  .pricing-feature {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-sm);
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+  .pricing-check {
+    flex-shrink: 0;
+    width: 20px;
+    text-align: center;
+    font-size: 12px;
+  }
+  .check-yes {
+    color: var(--saved);
+  }
+  .check-limit {
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .check-unlimited {
+    color: var(--saved);
+    font-weight: 500;
+    font-size: 11px;
+  }
+
+  /* cta */
+  .pricing-cta {
+    text-align: center;
+    justify-content: center;
+    width: 100%;
+  }
+
+  /* faq */
+  .pricing-faq {
+    padding: var(--space-3xl) var(--space-xl);
+    max-width: 820px;
+    margin: 0 auto;
+  }
+  .pricing-faq .heading-lg {
+    margin-bottom: var(--space-xl);
+  }
+  .faq-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+  }
+  .faq-item {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: var(--space-lg);
+  }
+  .faq-item:last-child {
+    border-bottom: none;
+  }
+  .faq-q {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: var(--space-sm);
+  }
+  .faq-a {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  /* responsive */
+  @media (max-width: 640px) {
+    .pricing-grid {
+      grid-template-columns: 1fr;
+    }
+    .pricing-hero {
+      padding: var(--space-2xl) var(--space-lg) var(--space-xl);
+    }
+    .pricing-cards-section {
+      padding: 0 var(--space-lg) var(--space-2xl);
+    }
+    .pricing-faq {
+      padding: var(--space-2xl) var(--space-lg);
+    }
+  }
+</style>
