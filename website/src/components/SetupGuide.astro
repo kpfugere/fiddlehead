@@ -11,39 +11,38 @@
     <div class="card setup-card reveal reveal-delay-1">
       <div class="setup-card-header">
         <span class="setup-step">1</span>
+        <h3 class="heading-md">assemblyai</h3>
+      </div>
+      <p class="setup-desc">powers transcription with speaker diarization. your audio goes directly to assemblyai — we never see it.</p>
+      <ol class="setup-steps">
+        <li>create an account at <a href="https://www.assemblyai.com/app/signup" target="_blank" rel="noopener">assemblyai.com</a></li>
+        <li>copy your api key from the <a href="https://www.assemblyai.com/app/account" target="_blank" rel="noopener">account dashboard</a></li>
+        <li>paste it into fiddlehead preferences</li>
+      </ol>
+      <p class="setup-note">cost: ~$0.003/min transcription.</p>
+    </div>
+
+    <div class="card setup-card reveal reveal-delay-2">
+      <div class="setup-card-header">
+        <span class="setup-step">2</span>
         <h3 class="heading-md">openai</h3>
       </div>
-      <p class="setup-desc">powers both transcription (gpt-4o-transcribe) and structuring (gpt-4o-mini).</p>
+      <p class="setup-desc">powers note structuring via gpt-4o-mini. extracts topics, summaries, and action items from your transcript.</p>
       <ol class="setup-steps">
         <li>create an account at <a href="https://platform.openai.com/signup" target="_blank" rel="noopener">platform.openai.com</a></li>
         <li>go to <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener">api keys</a> and create a new secret key</li>
         <li>add a payment method under <a href="https://platform.openai.com/settings/organization/billing" target="_blank" rel="noopener">billing</a> (pay-as-you-go)</li>
         <li>paste the key into fiddlehead preferences</li>
       </ol>
-      <p class="setup-note">cost: ~$0.006/min transcription + ~$0.001 per meeting structuring.</p>
-    </div>
-
-    <div class="card setup-card reveal reveal-delay-2">
-      <div class="setup-card-header">
-        <span class="setup-step">2</span>
-        <h3 class="heading-md">assemblyai <span class="setup-optional">optional</span></h3>
-      </div>
-      <p class="setup-desc">alternative transcription provider. switch between openai and assemblyai in settings.</p>
-      <ol class="setup-steps">
-        <li>create an account at <a href="https://www.assemblyai.com/app/signup" target="_blank" rel="noopener">assemblyai.com</a></li>
-        <li>copy your api key from the <a href="https://www.assemblyai.com/app/account" target="_blank" rel="noopener">account dashboard</a></li>
-        <li>paste it into fiddlehead preferences</li>
-      </ol>
-      <p class="setup-note">cost: ~$0.003/min. half the price of openai transcription.</p>
+      <p class="setup-note">cost: ~$0.001 per meeting structuring.</p>
     </div>
   </div>
 
   <div class="setup-privacy reveal reveal-delay-3">
     <span class="glyph glyph-saved">✓</span>
     <p>
-      your api keys are stored locally in macos keychain.
-      audio goes directly to openai or assemblyai.
-      <strong>there are no fiddlehead servers.</strong>
+      your api keys are stored in macos keychain. audio goes directly to assemblyai, text to openai.
+      notes are saved to your local filesystem. <strong>there are no fiddlehead servers. we never store your data.</strong>
     </p>
   </div>
 </section>

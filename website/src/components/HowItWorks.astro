@@ -10,13 +10,13 @@ const steps = [
     glyph: '◎',
     glyphClass: 'glyph-processing',
     title: 'transcribe',
-    description: 'openai or assemblyai transcription with speaker diarization. choose your provider, get named speakers and word-level accuracy.',
+    description: 'assemblyai transcription with speaker diarization. named speakers and word-level accuracy. audio goes directly to assemblyai — never stored on our servers.',
   },
   {
     glyph: '✓',
     glyphClass: 'glyph-saved',
     title: 'structure',
-    description: 'gpt-4o-mini extracts topics, key points, action items with owners, and cleans the transcript. saved as local markdown with rich yaml frontmatter.',
+    description: 'gpt-4o-mini extracts topics, key points, and action items with owners. saved as plain markdown on your machine — no cloud sync, no proprietary format.',
   },
 ];
 ---
@@ -50,7 +50,7 @@ const steps = [
     </div>
     <div class="hiw-feature">
       <span class="glyph glyph-processing">◎</span>
-      <span>provider choice — switch between openai and assemblyai in settings</span>
+      <span>100% local — notes saved to your filesystem as plain markdown. no cloud, no lock-in</span>
     </div>
   </div>
 </section>

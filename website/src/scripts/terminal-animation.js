@@ -12,7 +12,7 @@ if (container) {
     { text: '◎ listening 0:23', class: 'term-listening', delay: 800 },
     { text: '◎ transcribing...', class: 'term-processing', delay: 1500 },
     { text: '◎ structuring...', class: 'term-processing', delay: 1200 },
-    { text: '✓ saved → 2026-02-10_standup-sync.md', class: 'term-saved', delay: 0 },
+    { text: '✓ saved → ~/Documents/Fiddlehead/2026-02-10.md', class: 'term-saved', delay: 0 },
   ];
 
   let started = false;
