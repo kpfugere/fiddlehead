@@ -1,6 +1,0 @@
-export async function onRequest() {
-  return Response.redirect(
-    "https://pub-773127d3d8574b5e986b5c6aedfe32f1.r2.dev/releases/Fiddlehead-latest.dmg",
-    302
-  );
-}
