@@ -167,12 +167,14 @@ jobs:
           npm install -g wrangler
           wrangler r2 object put "fiddlehead-releases/releases/${DMG_NAME}" \
             --file "$DMG_PATH" \
-            --content-type "application/octet-stream"
+            --content-type "application/octet-stream" \
+            --remote
 
           # Also upload as "latest" for a stable download URL
           wrangler r2 object put "fiddlehead-releases/releases/Fiddlehead-latest.dmg" \
             --file "$DMG_PATH" \
-            --content-type "application/octet-stream"
+            --content-type "application/octet-stream" \
+            --remote
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
