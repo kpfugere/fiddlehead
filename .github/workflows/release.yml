@@ -143,12 +143,10 @@ jobs:
           tar -xf /tmp/sparkle.tar.xz -C /tmp/sparkle
 
           # Sign the DMG with Sparkle's EdDSA key
+          # sign_update outputs: sparkle:edSignature="..." length="..."
           SIGNATURE=$(echo "$SPARKLE_PRIVATE_KEY" | \
             /tmp/sparkle/bin/sign_update "$DMG_PATH" --ed-key-file -)
           echo "SPARKLE_SIGNATURE=$SIGNATURE" >> "$GITHUB_ENV"
-
-          DMG_SIZE=$(stat -f%z "$DMG_PATH")
-          echo "DMG_SIZE=$DMG_SIZE" >> "$GITHUB_ENV"
 
       - name: Extract changelog for this version
         id: changelog
@@ -195,7 +193,7 @@ jobs:
           DMG_URL="https://pub-773127d3d8574b5e986b5c6aedfe32f1.r2.dev/releases/${DMG_NAME}"
           PUB_DATE=$(date -R)
 
-          ITEM="    <item>\n      <title>Version ${VERSION}</title>\n      <pubDate>${PUB_DATE}</pubDate>\n      <sparkle:version>${VERSION}</sparkle:version>\n      <sparkle:shortVersionString>${VERSION}</sparkle:shortVersionString>\n      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>\n      <description><![CDATA[${{ steps.changelog.outputs.notes }}]]></description>\n      <enclosure\n        url=\"${DMG_URL}\"\n        ${SPARKLE_SIGNATURE}\n        length=\"${DMG_SIZE}\"\n        type=\"application/octet-stream\" />\n    </item>"
+          ITEM="    <item>\n      <title>Version ${VERSION}</title>\n      <pubDate>${PUB_DATE}</pubDate>\n      <sparkle:version>${VERSION}</sparkle:version>\n      <sparkle:shortVersionString>${VERSION}</sparkle:shortVersionString>\n      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>\n      <description><![CDATA[${{ steps.changelog.outputs.notes }}]]></description>\n      <enclosure\n        url=\"${DMG_URL}\"\n        ${SPARKLE_SIGNATURE}\n        type=\"application/octet-stream\" />\n    </item>"
 
           # Insert new item before </channel>
           sed -i '' "s|</channel>|${ITEM}\n  </channel>|" website/public/appcast.xml
