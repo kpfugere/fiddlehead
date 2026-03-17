@@ -18,5 +18,17 @@
         length="2159760"
         type="application/octet-stream" />
     </item>
+      <item>
+      <title>Version 0.2.1</title>
+      <pubDate>Tue, 17 Mar 2026 15:30:05 +0000</pubDate>
+      <sparkle:version>0.2.1</sparkle:version>
+      <sparkle:shortVersionString>0.2.1</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[]]></description>
+      <enclosure
+        url="https://pub-773127d3d8574b5e986b5c6aedfe32f1.r2.dev/releases/Fiddlehead-0.2.1.dmg"
+        sparkle:edSignature="83v1qOZIlw+OJWCOe4GoMGGwPcJknfWuOpTb70AuFPibLPRDIJ1uhM+MfO+jzjylm3ytnpy1MUifBSWa963cCg==" length="2161465"
+        type="application/octet-stream" />
+    </item>
   </channel>
 </rss>
