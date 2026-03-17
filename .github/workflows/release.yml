@@ -159,6 +159,21 @@ jobs:
           echo "$NOTES" >> "$GITHUB_OUTPUT"
           echo "EOF" >> "$GITHUB_OUTPUT"
 
+      - name: Upload DMG to Cloudflare R2
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          npm install -g wrangler
+          wrangler r2 object put "fiddlehead-releases/releases/${DMG_NAME}" \
+            --file "$DMG_PATH" \
+            --content-type "application/octet-stream"
+
+          # Also upload as "latest" for a stable download URL
+          wrangler r2 object put "fiddlehead-releases/releases/Fiddlehead-latest.dmg" \
+            --file "$DMG_PATH" \
+            --content-type "application/octet-stream"
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
@@ -167,8 +182,8 @@ jobs:
             ${{ steps.changelog.outputs.notes }}
 
             ---
-            **Install:** Download the DMG, open it, and drag Fiddlehead to Applications.
-          files: ${{ env.DMG_PATH }}
+            **Download:** [Fiddlehead-${{ steps.version.outputs.version }}.dmg](https://pub-773127d3d8574b5e986b5c6aedfe32f1.r2.dev/releases/${{ env.DMG_NAME }})
+            Open the DMG and drag Fiddlehead to Applications.
           draft: false
           prerelease: false
 
@@ -176,7 +191,7 @@ jobs:
         run: |
           VERSION="${{ steps.version.outputs.version }}"
           TAG="${{ steps.version.outputs.tag }}"
-          DMG_URL="https://github.com/${{ github.repository }}/releases/download/${TAG}/${DMG_NAME}"
+          DMG_URL="https://pub-773127d3d8574b5e986b5c6aedfe32f1.r2.dev/releases/${DMG_NAME}"
           PUB_DATE=$(date -R)
 
           ITEM="    <item>\n      <title>Version ${VERSION}</title>\n      <pubDate>${PUB_DATE}</pubDate>\n      <sparkle:version>${VERSION}</sparkle:version>\n      <sparkle:shortVersionString>${VERSION}</sparkle:shortVersionString>\n      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>\n      <description><![CDATA[${{ steps.changelog.outputs.notes }}]]></description>\n      <enclosure\n        url=\"${DMG_URL}\"\n        ${SPARKLE_SIGNATURE}\n        length=\"${DMG_SIZE}\"\n        type=\"application/octet-stream\" />\n    </item>"
