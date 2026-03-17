@@ -30,6 +30,7 @@ struct FiddleheadApp: App {
                     onboardingController.showIfNeeded(settings: settings)
                     coordinator.setup(pipeline: pipeline, autoMode: autoMode, settings: settings)
                     licenseManager.validateOnLaunch()
+                    updateController.startIfNeeded()
                 }
                 .onOpenURL { url in
                     guard url.scheme == "fiddlehead",

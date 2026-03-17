@@ -13,7 +13,7 @@ final class SettingsWindowController {
         // If already open, just bring to front
         if let window = window, window.isVisible {
             window.makeKeyAndOrderFront(nil)
-            NSApp.activate(ignoringOtherApps: true)
+            NSApp.activate()
             return
         }
 
@@ -36,7 +36,7 @@ final class SettingsWindowController {
         // Temporarily become a regular app so the window can receive focus
         NSApp.setActivationPolicy(.regular)
         window.makeKeyAndOrderFront(nil)
-        NSApp.activate(ignoringOtherApps: true)
+        NSApp.activate()
     }
 
     func close() {

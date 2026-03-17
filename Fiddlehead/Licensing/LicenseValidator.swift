@@ -99,7 +99,7 @@ enum LicenseValidator {
 
     /// Hardware UUID from IOKit — stable machine fingerprint.
     static func machineFingerprint() -> String {
-        let service = IOServiceGetMatchingService(kIOMasterPortDefault, IOServiceMatching("IOPlatformExpertDevice"))
+        let service = IOServiceGetMatchingService(kIOMainPortDefault, IOServiceMatching("IOPlatformExpertDevice"))
         defer { IOObjectRelease(service) }
 
         guard let uuidData = IORegistryEntryCreateCFProperty(

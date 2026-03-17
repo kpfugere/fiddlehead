@@ -32,7 +32,7 @@ final class OnboardingWindowController {
         // Temporarily become a regular app so the window can receive focus
         NSApp.setActivationPolicy(.regular)
         window.makeKeyAndOrderFront(nil)
-        NSApp.activate(ignoringOtherApps: true)
+        NSApp.activate()
     }
 
     func close() {

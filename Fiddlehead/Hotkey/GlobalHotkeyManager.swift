@@ -1,69 +1,47 @@
-import Carbon
 import AppKit
 
-/// Registers a global hotkey (⌘⇧R) using the Carbon Event API.
-/// This is the only reliable method for global hotkeys on macOS.
+/// Registers a global hotkey (⌘⇧R) using NSEvent monitors.
 final class GlobalHotkeyManager: @unchecked Sendable {
-    private var eventHandler: EventHandlerRef?
-    private var hotkeyRef: EventHotKeyRef?
-    private let hotkeyID = EventHotKeyID(signature: OSType(0x46444C48), id: 1) // "FDLH"
+    private var globalMonitor: Any?
+    private var localMonitor: Any?
     private var callback: (() -> Void)?
 
     func register(callback: @escaping () -> Void) {
         self.callback = callback
 
-        var eventType = EventTypeSpec(
-            eventClass: OSType(kEventClassKeyboard),
-            eventKind: UInt32(kEventHotKeyPressed)
-        )
+        globalMonitor = NSEvent.addGlobalMonitorForEvents(matching: .keyDown) { [weak self] event in
+            self?.handleEvent(event)
+        }
 
-        // Install handler
-        let status = InstallEventHandler(
-            GetApplicationEventTarget(),
-            { _, event, userData -> OSStatus in
-                guard let userData else { return OSStatus(eventNotHandledErr) }
-                let manager = Unmanaged<GlobalHotkeyManager>.fromOpaque(userData).takeUnretainedValue()
-                manager.handleHotkey()
-                return noErr
-            },
-            1,
-            &eventType,
-            Unmanaged.passUnretained(self).toOpaque(),
-            &eventHandler
-        )
-
-        guard status == noErr else { return }
-
-        // Register ⌘⇧R
-        // R key = kVK_ANSI_R = 0x0F
-        var hotkeyRef: EventHotKeyRef?
-        RegisterEventHotKey(
-            UInt32(kVK_ANSI_R),
-            UInt32(cmdKey | shiftKey),
-            hotkeyID,
-            GetApplicationEventTarget(),
-            0,
-            &hotkeyRef
-        )
-        self.hotkeyRef = hotkeyRef
+        localMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
+            if self?.handleEvent(event) == true {
+                return nil // Consume the event
+            }
+            return event
+        }
     }
 
     func unregister() {
-        if let hotkeyRef {
-            UnregisterEventHotKey(hotkeyRef)
-            self.hotkeyRef = nil
-        }
-        if let eventHandler {
-            RemoveEventHandler(eventHandler)
-            self.eventHandler = nil
-        }
+        if let globalMonitor { NSEvent.removeMonitor(globalMonitor) }
+        if let localMonitor { NSEvent.removeMonitor(localMonitor) }
+        globalMonitor = nil
+        localMonitor = nil
         callback = nil
     }
 
-    private func handleHotkey() {
+    /// Returns true if the event matched ⌘⇧R and was handled.
+    @discardableResult
+    private func handleEvent(_ event: NSEvent) -> Bool {
+        // ⌘⇧R: keyCode 0x0F = R
+        let required: NSEvent.ModifierFlags = [.command, .shift]
+        guard event.keyCode == 0x0F,
+              event.modifierFlags.intersection(.deviceIndependentFlagsMask).contains(required)
+        else { return false }
+
         DispatchQueue.main.async { [weak self] in
             self?.callback?()
         }
+        return true
     }
 
     deinit {
