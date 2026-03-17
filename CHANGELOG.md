@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-03-17
+### Fixed
+- App failing to launch on macOS 26 — removed Carbon framework dependency and replaced with modern NSEvent-based global hotkey registration
+- Deprecated IOKit symbol (`kIOMasterPortDefault`) replaced with `kIOMainPortDefault`
+- Sparkle updater now defers initialization to prevent silent launch crashes
+
 ## [0.2.0] - 2026-03-16
 ### Added
 - Auto-update support via Sparkle — the app checks for updates automatically and offers in-app install
