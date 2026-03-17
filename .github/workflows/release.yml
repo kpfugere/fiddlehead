@@ -189,11 +189,14 @@ jobs:
       - name: Update appcast.xml
         run: |
           VERSION="${{ steps.version.outputs.version }}"
-          TAG="${{ steps.version.outputs.tag }}"
           DMG_URL="https://pub-773127d3d8574b5e986b5c6aedfe32f1.r2.dev/releases/${DMG_NAME}"
           PUB_DATE=$(date -R)
 
-          ITEM="    <item>\n      <title>Version ${VERSION}</title>\n      <pubDate>${PUB_DATE}</pubDate>\n      <sparkle:version>${VERSION}</sparkle:version>\n      <sparkle:shortVersionString>${VERSION}</sparkle:shortVersionString>\n      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>\n      <description><![CDATA[${{ steps.changelog.outputs.notes }}]]></description>\n      <enclosure\n        url=\"${DMG_URL}\"\n        ${SPARKLE_SIGNATURE}\n        type=\"application/octet-stream\" />\n    </item>"
+          # Extract build number (CFBundleVersion) from the built app for sparkle:version
+          APP_PATH="$RUNNER_TEMP/export/Fiddlehead.app"
+          BUILD_NUMBER=$(/usr/libexec/PlistBuddy -c "Print CFBundleVersion" "$APP_PATH/Contents/Info.plist")
+
+          ITEM="    <item>\n      <title>Version ${VERSION}</title>\n      <pubDate>${PUB_DATE}</pubDate>\n      <sparkle:version>${BUILD_NUMBER}</sparkle:version>\n      <sparkle:shortVersionString>${VERSION}</sparkle:shortVersionString>\n      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>\n      <description><![CDATA[${{ steps.changelog.outputs.notes }}]]></description>\n      <enclosure\n        url=\"${DMG_URL}\"\n        ${SPARKLE_SIGNATURE}\n        type=\"application/octet-stream\" />\n    </item>"
 
           # Insert new item before </channel>
           sed -i '' "s|</channel>|${ITEM}\n  </channel>|" website/public/appcast.xml

@@ -8,7 +8,7 @@
     <item>
       <title>Version 0.2.0</title>
       <pubDate>Tue, 17 Mar 2026 01:45:49 +0000</pubDate>
-      <sparkle:version>0.2.0</sparkle:version>
+      <sparkle:version>2</sparkle:version>
       <sparkle:shortVersionString>0.2.0</sparkle:shortVersionString>
       <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
       <description><![CDATA[]]></description>
@@ -18,10 +18,10 @@
         length="2159760"
         type="application/octet-stream" />
     </item>
-      <item>
+    <item>
       <title>Version 0.2.1</title>
       <pubDate>Tue, 17 Mar 2026 15:30:05 +0000</pubDate>
-      <sparkle:version>0.2.1</sparkle:version>
+      <sparkle:version>3</sparkle:version>
       <sparkle:shortVersionString>0.2.1</sparkle:shortVersionString>
       <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
       <description><![CDATA[]]></description>
