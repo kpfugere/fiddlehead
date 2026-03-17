@@ -161,20 +161,19 @@ jobs:
 
       - name: Upload DMG to Cloudflare R2
         env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+          R2_ENDPOINT: https://${{ secrets.CLOUDFLARE_ACCOUNT_ID }}.r2.cloudflarestorage.com
         run: |
-          npm install -g wrangler
-          wrangler r2 object put "fiddlehead-releases/releases/${DMG_NAME}" \
-            --file "$DMG_PATH" \
-            --content-type "application/octet-stream" \
-            --remote
+          aws s3 cp "$DMG_PATH" "s3://fiddlehead-releases/releases/${DMG_NAME}" \
+            --endpoint-url "$R2_ENDPOINT" \
+            --content-type "application/octet-stream"
 
           # Also upload as "latest" for a stable download URL
-          wrangler r2 object put "fiddlehead-releases/releases/Fiddlehead-latest.dmg" \
-            --file "$DMG_PATH" \
-            --content-type "application/octet-stream" \
-            --remote
+          aws s3 cp "$DMG_PATH" "s3://fiddlehead-releases/releases/Fiddlehead-latest.dmg" \
+            --endpoint-url "$R2_ENDPOINT" \
+            --content-type "application/octet-stream"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
