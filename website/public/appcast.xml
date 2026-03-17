@@ -5,5 +5,18 @@
     <link>https://fiddleheadai.com/appcast.xml</link>
     <description>Most recent updates to Fiddlehead</description>
     <language>en</language>
+      <item>
+      <title>Version 0.2.0</title>
+      <pubDate>Tue, 17 Mar 2026 01:07:17 +0000</pubDate>
+      <sparkle:version>0.2.0</sparkle:version>
+      <sparkle:shortVersionString>0.2.0</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[]]></description>
+      <enclosure
+        url="https://github.com/kpfugere/fiddlehead/releases/download/v0.2.0/Fiddlehead-0.2.0.dmg"
+        sparkle:edSignature="OJCRoHxyjEMmVzERXb6SXcpGxK1zzgzPCA7RSi8mPkV97To3qT2sugFgaC4f2/bZOHFlL1/ajG2VB5UYyHfiAg==" length="2159786"
+        length="2159786"
+        type="application/octet-stream" />
+    </item>
   </channel>
 </rss>
