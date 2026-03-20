@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.2.4] - 2026-03-20
+### Fixed
+- Auto mode recordings not counting toward free tier usage — recordings used counter in Settings now updates correctly for auto mode, and the free tier limit is properly enforced
+
 ## [0.2.3] - 2026-03-20
 ### Fixed
 - TelemetryDeck analytics not initializing on app launch — moved initialization from menu bar view's onAppear (which only fires when clicking the icon) to app init so it runs immediately at startup
