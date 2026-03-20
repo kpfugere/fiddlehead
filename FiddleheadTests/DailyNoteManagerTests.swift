@@ -4,7 +4,7 @@ import XCTest
 @MainActor
 final class DailyNoteManagerTests: XCTestCase {
 
-    private var tempDir: URL!
+    private nonisolated(unsafe) var tempDir: URL!
 
     override func setUp() {
         super.setUp()
