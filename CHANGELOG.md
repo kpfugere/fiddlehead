@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.2.3] - 2026-03-20
+### Fixed
+- TelemetryDeck analytics not initializing on app launch — moved initialization from menu bar view's onAppear (which only fires when clicking the icon) to app init so it runs immediately at startup
+
 ## [0.2.2] - 2026-03-20
 ### Added
 - Anonymous usage analytics via TelemetryDeck — tracks app launches, recording completions, and error rates across macOS versions (no personal data collected)

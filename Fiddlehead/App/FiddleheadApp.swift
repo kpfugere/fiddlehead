@@ -15,6 +15,11 @@ struct FiddleheadApp: App {
     private let onboardingController = OnboardingWindowController()
     private let settingsController = SettingsWindowController()
 
+    init() {
+        let config = TelemetryDeck.Config(appID: "475A4977-68BC-4C1F-9805-E278EE22FD0E")
+        TelemetryDeck.initialize(config: config)
+    }
+
     var body: some Scene {
         MenuBarExtra {
             MenuBarView(openSettingsAction: { settingsController.show(settings: settings) })
@@ -24,9 +29,6 @@ struct FiddleheadApp: App {
                 .environmentObject(licenseManager)
                 .environmentObject(updateController)
                 .onAppear {
-                    let telemetryConfig = TelemetryDeck.Config(appID: "475A4977-68BC-4C1F-9805-E278EE22FD0E")
-                    TelemetryDeck.initialize(config: telemetryConfig)
-
                     settings.migrateFromKeychainIfNeeded()
                     pipeline.configure(settings: settings)
                     autoMode.configure(settings: settings)
