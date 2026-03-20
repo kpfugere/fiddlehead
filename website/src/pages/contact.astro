@@ -1,0 +1,220 @@
+---
+import Base from '../layouts/Base.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Base
+  title="contact — fiddlehead"
+  description="get in touch with the fiddlehead team. we'd love to hear from you."
+>
+  <nav class="contact-nav">
+    <div class="contact-nav-inner">
+      <a href="/" class="contact-nav-logo" aria-label="Back to home">
+        <img src="/images/frog-icon.svg" alt="" width="28" height="21" />
+        <span class="contact-nav-name">fiddlehead</span>
+      </a>
+    </div>
+  </nav>
+
+  <main>
+    <section class="contact-hero">
+      <div class="contact-hero-content hero-enter hero-enter-1">
+        <h1 class="heading-lg">get in touch.</h1>
+        <p class="subhead contact-sub">
+          bug report, feature request, or just want to say hi — we'd love to hear from you.
+        </p>
+      </div>
+    </section>
+
+    <section class="contact-form-section">
+      <form
+        class="contact-form card hero-enter hero-enter-2"
+        action="https://formsubmit.co/support@fiddleheadai.com"
+        method="POST"
+      >
+        <!-- formsubmit config -->
+        <input type="hidden" name="_subject" value="fiddlehead contact form" />
+        <input type="hidden" name="_captcha" value="false" />
+        <input type="hidden" name="_next" value="https://fiddleheadai.com/contact?sent=true" />
+        <input type="text" name="_honey" style="display:none" />
+
+        <div class="form-group">
+          <label for="name" class="form-label">name</label>
+          <input type="text" id="name" name="name" class="form-input" required />
+        </div>
+
+        <div class="form-group">
+          <label for="email" class="form-label">email</label>
+          <input type="email" id="email" name="email" class="form-input" required />
+        </div>
+
+        <div class="form-group">
+          <label for="message" class="form-label">message</label>
+          <textarea id="message" name="message" class="form-input form-textarea" rows="5" required></textarea>
+        </div>
+
+        <button type="submit" class="btn-primary contact-submit">send message</button>
+      </form>
+
+      <div class="contact-alt hero-enter hero-enter-3">
+        <p>or email us directly at <a href="mailto:support@fiddleheadai.com">support@fiddleheadai.com</a></p>
+      </div>
+    </section>
+
+    <!-- success message (shown via query param) -->
+    <div class="contact-success" id="success-msg">
+      <p>message sent — we'll get back to you soon.</p>
+    </div>
+  </main>
+
+  <Footer />
+</Base>
+
+<script>
+  if (window.location.search.includes('sent=true')) {
+    const msg = document.getElementById('success-msg');
+    if (msg) msg.classList.add('visible');
+    const form = document.querySelector('.contact-form') as HTMLFormElement | null;
+    if (form) form.style.display = 'none';
+    const alt = document.querySelector('.contact-alt') as HTMLElement | null;
+    if (alt) alt.style.display = 'none';
+  }
+</script>
+
+<style>
+  /* nav (same pattern as pricing) */
+  .contact-nav {
+    border-bottom: 1px solid var(--border);
+    padding: 0 var(--space-xl);
+  }
+  .contact-nav-inner {
+    max-width: 1080px;
+    margin: 0 auto;
+    height: 52px;
+    display: flex;
+    align-items: center;
+  }
+  .contact-nav-logo {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    color: var(--text-primary);
+  }
+  .contact-nav-logo:hover {
+    color: var(--accent);
+  }
+  .contact-nav-name {
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  /* hero */
+  .contact-hero {
+    padding: var(--space-3xl) var(--space-xl) var(--space-2xl);
+    text-align: center;
+    display: flex;
+    justify-content: center;
+  }
+  .contact-hero-content {
+    max-width: 600px;
+  }
+  .contact-sub {
+    margin-top: var(--space-lg);
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* form section */
+  .contact-form-section {
+    max-width: 520px;
+    margin: 0 auto;
+    padding: 0 var(--space-xl) var(--space-3xl);
+  }
+
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .form-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  .form-input {
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--text-primary);
+    background: var(--bg);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius);
+    padding: var(--space-md) var(--space-lg);
+    transition: border-color 0.2s;
+    text-transform: inherit;
+  }
+  .form-input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 12px var(--glow-accent);
+  }
+  .form-input::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.4;
+  }
+
+  .form-textarea {
+    resize: vertical;
+    min-height: 120px;
+    line-height: 1.6;
+  }
+
+  .contact-submit {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+    margin-top: var(--space-sm);
+  }
+
+  /* alt email */
+  .contact-alt {
+    text-align: center;
+    margin-top: var(--space-xl);
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+
+  /* success message */
+  .contact-success {
+    display: none;
+    text-align: center;
+    padding: var(--space-xl);
+    max-width: 520px;
+    margin: 0 auto;
+  }
+  .contact-success.visible {
+    display: block;
+  }
+  .contact-success p {
+    font-size: 16px;
+    color: var(--saved);
+    font-weight: 500;
+  }
+
+  /* responsive */
+  @media (max-width: 640px) {
+    .contact-hero {
+      padding: var(--space-2xl) var(--space-lg) var(--space-xl);
+    }
+    .contact-form-section {
+      padding: 0 var(--space-lg) var(--space-2xl);
+    }
+  }
+</style>
