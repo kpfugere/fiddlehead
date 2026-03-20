@@ -17,6 +17,15 @@ const {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5LQSQTJZBL"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-5LQSQTJZBL');
+    </script>
     <title>{title}</title>
     <meta name="description" content={description} />
 
@@ -56,6 +65,17 @@ const {
 
     <script src="../scripts/scroll-observer.js"></script>
     <script src="../scripts/nav-scroll.js"></script>
+    <script is:inline>
+      document.addEventListener('click', function(e) {
+        var link = e.target.closest('a[href="/download"]');
+        if (link) {
+          gtag('event', 'file_download', {
+            file_name: 'Fiddlehead-latest.dmg',
+            link_url: '/download'
+          });
+        }
+      });
+    </script>
   </body>
 </html>
 
