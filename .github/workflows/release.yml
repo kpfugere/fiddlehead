@@ -222,7 +222,7 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           cd website && npm ci && npm run build
-          npx wrangler pages deploy dist --project-name=fiddlehead
+          npx wrangler pages deploy dist --project-name=fiddlehead --branch=main
 
       - name: Cleanup keychain
         if: always()
