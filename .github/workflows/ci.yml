@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    strategy:
+      matrix:
+        include:
+          - os: macos-14
+            xcode: "15.4"
+            name: "macOS 14 (Sonoma)"
+          - os: macos-15
+            xcode: "16.2"
+            name: "macOS 15 (Sequoia)"
+    runs-on: ${{ matrix.os }}
+    name: Build & Test — ${{ matrix.name }}
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_${{ matrix.xcode }}.app/Contents/Developer
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      - name: Resolve SPM dependencies
+        run: |
+          xcodebuild -resolvePackageDependencies \
+            -project Fiddlehead.xcodeproj \
+            -scheme Fiddlehead
+
+      - name: Build
+        run: |
+          xcodebuild -project Fiddlehead.xcodeproj \
+            -scheme Fiddlehead \
+            -configuration Debug \
+            CODE_SIGN_IDENTITY="-" \
+            CODE_SIGNING_ALLOWED=NO \
+            build
+
+      - name: Test
+        run: |
+          xcodebuild -project Fiddlehead.xcodeproj \
+            -scheme FiddleheadTests \
+            -configuration Debug \
+            CODE_SIGN_IDENTITY="-" \
+            CODE_SIGNING_ALLOWED=NO \
+            test

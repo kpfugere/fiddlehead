@@ -1,5 +1,6 @@
 import Combine
 import SwiftUI
+import TelemetryDeck
 
 @main
 struct FiddleheadApp: App {
@@ -23,6 +24,9 @@ struct FiddleheadApp: App {
                 .environmentObject(licenseManager)
                 .environmentObject(updateController)
                 .onAppear {
+                    let telemetryConfig = TelemetryDeck.Config(appID: "475A4977-68BC-4C1F-9805-E278EE22FD0E")
+                    TelemetryDeck.initialize(config: telemetryConfig)
+
                     settings.migrateFromKeychainIfNeeded()
                     pipeline.configure(settings: settings)
                     autoMode.configure(settings: settings)

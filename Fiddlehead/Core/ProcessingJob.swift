@@ -1,5 +1,6 @@
 import Foundation
 import os.log
+import TelemetryDeck
 
 private let logger = Logger(subsystem: "com.kylefugere.Fiddlehead", category: "ProcessingJob")
 
@@ -102,6 +103,11 @@ final class ProcessingJob: ObservableObject, Identifiable {
                 fileURL: audioURL,
                 channels: channelCount
             )
+            TelemetryDeck.signal("transcriptionCompleted", parameters: [
+                "segments": "\(transcript!.segments.count)",
+                "duration": "\(Int(transcript!.duration))",
+                "channels": "\(channelCount)",
+            ])
             logger.info("Transcript received — segments: \(transcript!.segments.count), duration: \(transcript!.duration)s")
         } catch {
             logger.error("Transcription failed: \(error.localizedDescription, privacy: .public)")
@@ -126,6 +132,7 @@ final class ProcessingJob: ObservableObject, Identifiable {
                 userMessage = "Transcription failed"
             }
 
+            TelemetryDeck.signal("transcriptionFailed", parameters: ["error": userMessage])
             errorMessage = userMessage
             cleanupTempAudio()
             onComplete?(nil, nil)

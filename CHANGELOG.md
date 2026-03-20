@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.2.2] - 2026-03-20
+### Added
+- Anonymous usage analytics via TelemetryDeck — tracks app launches, recording completions, and error rates across macOS versions (no personal data collected)
+- CI workflow that builds and tests on both macOS 14 (Sonoma) and macOS 15 (Sequoia) to catch version-specific regressions
+
 ## [0.2.1] - 2026-03-17
 ### Fixed
 - App failing to launch on macOS 26 — removed Carbon framework dependency and replaced with modern NSEvent-based global hotkey registration

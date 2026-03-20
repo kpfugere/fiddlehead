@@ -28,6 +28,9 @@ packages:
   Sparkle:
     url: https://github.com/sparkle-project/Sparkle
     from: "2.6.4"
+  TelemetryDeck:
+    url: https://github.com/TelemetryDeck/SwiftSDK
+    from: "2.0.0"
 
 targets:
   Fiddlehead:
@@ -47,12 +50,13 @@ targets:
         INFOPLIST_FILE: Fiddlehead/Info.plist
         CODE_SIGN_ENTITLEMENTS: Fiddlehead/Fiddlehead.entitlements
         PRODUCT_NAME: Fiddlehead
-        MARKETING_VERSION: "0.2.1"
-        CURRENT_PROJECT_VERSION: "3"
+        MARKETING_VERSION: "0.2.2"
+        CURRENT_PROJECT_VERSION: "4"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/../Frameworks"
     dependencies:
       - package: Sparkle
+      - package: TelemetryDeck
 
   FiddleheadTests:
     type: bundle.unit-test

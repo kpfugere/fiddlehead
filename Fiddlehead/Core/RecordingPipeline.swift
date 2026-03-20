@@ -2,6 +2,7 @@ import AVFoundation
 import Foundation
 import os.log
 @preconcurrency import ScreenCaptureKit
+import TelemetryDeck
 
 private let logger = Logger(subsystem: "com.kylefugere.Fiddlehead", category: "Pipeline")
 
@@ -125,9 +126,14 @@ final class RecordingPipeline: ObservableObject {
             startTimer()
             startSilenceMonitor(stream: audioStream, settings: settings)
 
+            TelemetryDeck.signal("recordingStarted", parameters: [
+                "systemAudio": "\(settings.systemAudioEnabled)",
+                "hasMeeting": "\(meeting != nil)",
+            ])
             logger.info("Recording started — requested system audio: \(settings.systemAudioEnabled), meeting: \(meeting?.title ?? "none")")
         } catch {
             state = .error(message: "Failed to start recording: \(error.localizedDescription)")
+            TelemetryDeck.signal("recordingFailed", parameters: ["error": error.localizedDescription])
             logger.error("Recording failed: \(error)")
             cleanupTempAudio()
             resetAfterDelay()
@@ -190,6 +196,12 @@ final class RecordingPipeline: ObservableObject {
             if noteURL != nil {
                 self.savedNoteCount += 1
                 LicenseManager.shared.incrementRecordingCount()
+                TelemetryDeck.signal("noteCompleted", parameters: [
+                    "duration": "\(Int(duration))",
+                    "channels": "\(self.actualChannelCount)",
+                ])
+            } else {
+                TelemetryDeck.signal("noteFailed")
             }
             logger.info("Job finished — \(self.activeJobs.count) jobs remaining")
         }

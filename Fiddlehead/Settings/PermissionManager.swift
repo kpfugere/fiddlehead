@@ -1,5 +1,6 @@
 import AVFoundation
 @preconcurrency import ScreenCaptureKit
+import TelemetryDeck
 
 @MainActor
 final class PermissionManager: ObservableObject {
@@ -29,6 +30,10 @@ final class PermissionManager: ObservableObject {
     func requestMicrophone() async -> Bool {
         let granted = await AVCaptureDevice.requestAccess(for: .audio)
         microphoneGranted = granted
+        TelemetryDeck.signal("permissionResult", parameters: [
+            "type": "microphone",
+            "granted": "\(granted)",
+        ])
         return granted
     }
 
@@ -41,8 +46,16 @@ final class PermissionManager: ObservableObject {
                 false, onScreenWindowsOnly: false
             )
             screenCaptureGranted = true
+            TelemetryDeck.signal("permissionResult", parameters: [
+                "type": "screenCapture",
+                "granted": "true",
+            ])
         } catch {
             screenCaptureGranted = false
+            TelemetryDeck.signal("permissionResult", parameters: [
+                "type": "screenCapture",
+                "granted": "false",
+            ])
         }
     }
 
