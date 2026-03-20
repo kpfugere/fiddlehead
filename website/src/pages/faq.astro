@@ -1,0 +1,215 @@
+---
+import Base from '../layouts/Base.astro';
+import Footer from '../components/Footer.astro';
+
+const sections = [
+  {
+    heading: 'about fiddlehead',
+    faqs: [
+      {
+        q: 'what is fiddlehead?',
+        a: 'fiddlehead is a macOS menu bar app that records meetings and generates ai-structured notes. it runs quietly in your menu bar, captures mic + system audio, transcribes with speaker names, and saves organized markdown notes locally on your mac.',
+      },
+      {
+        q: 'how does fiddlehead work?',
+        a: 'click record (or let auto mode detect voice activity) → fiddlehead captures audio → sends to a transcription provider for a speaker-labeled transcript → ai structures it into markdown with summaries, topics, and action items → saved as a .md file on your mac.',
+      },
+      {
+        q: 'what platforms does fiddlehead support?',
+        a: 'macOS 14 (Sonoma) and later. fiddlehead is a native menu bar app built with SwiftUI.',
+      },
+      {
+        q: 'is fiddlehead free?',
+        a: 'you get 10 free recordings with full features. after that, it\'s a one-time $29 payment for unlimited recordings forever. no subscription.',
+      },
+    ],
+  },
+  {
+    heading: 'vs competitors',
+    faqs: [
+      {
+        q: 'how is fiddlehead different from granola?',
+        a: 'fiddlehead saves notes as local markdown files (not cloud-locked), identifies speakers by name (granola doesn\'t do speaker diarization), costs $29 once (granola is $18/month), and outputs structured yaml frontmatter that ai agents can parse. granola requires an active subscription for continued use.',
+      },
+      {
+        q: 'how is fiddlehead different from otter.ai?',
+        a: 'fiddlehead doesn\'t send a bot to your meetings, stores everything locally on your mac, outputs structured markdown (not a proprietary format), and costs $29 once instead of $8–17/month. otter requires a subscription and stores your data in their cloud.',
+      },
+      {
+        q: 'how is fiddlehead different from fireflies?',
+        a: 'fiddlehead records directly from your mac without a meeting bot, keeps all data local, costs $29 one-time (fireflies is $10–18/month plus ai credit fees), and outputs agent-readable markdown. fireflies stores everything in their cloud and charges extra for ai features.',
+      },
+      {
+        q: 'what\'s the best meeting notes app for mac?',
+        a: 'fiddlehead is purpose-built for macOS as a native menu bar app. unlike web-based tools (otter, fireflies) or electron apps, it integrates with macos system audio via screencapturekit and your calendar. notes are saved as local files you own.',
+      },
+    ],
+  },
+  {
+    heading: 'features',
+    faqs: [
+      {
+        q: 'does fiddlehead record system audio?',
+        a: 'yes. it captures both microphone and system audio, so it hears you and everyone on the call.',
+      },
+      {
+        q: 'does fiddlehead identify speakers by name?',
+        a: 'yes. fiddlehead uses speaker diarization to label each speaker with their real name in the transcript and notes.',
+      },
+      {
+        q: 'what format are the notes saved in?',
+        a: 'markdown (.md) files with yaml frontmatter containing metadata like date, duration, speakers, topics, and tags. plain text files you can open in any editor.',
+      },
+      {
+        q: 'can ai agents read fiddlehead notes?',
+        a: 'yes. the structured yaml frontmatter and organized markdown sections are designed to be machine-readable. ai agents like claude can query your notes for action items, decisions, or context from past meetings.',
+      },
+      {
+        q: 'does fiddlehead need a meeting bot?',
+        a: 'no. fiddlehead records directly from your mac\'s audio — no bot joins your call, no one sees a recording indicator in the meeting.',
+      },
+      {
+        q: 'does fiddlehead have auto mode?',
+        a: 'yes. auto mode uses voice activity detection and calendar integration to automatically start and stop recording when meetings begin and end.',
+      },
+    ],
+  },
+  {
+    heading: 'privacy',
+    faqs: [
+      {
+        q: 'where is my data stored?',
+        a: 'on your mac. notes are saved as plain markdown files in a folder you choose. no cloud sync, no account required.',
+      },
+      {
+        q: 'does fiddlehead send my audio to the cloud?',
+        a: 'audio is sent to the transcription provider (openai or assemblyai) for processing, then discarded. fiddlehead never stores your audio on any server.',
+      },
+      {
+        q: 'can i use fiddlehead without an internet connection?',
+        a: 'you can start and stop recordings offline. transcription and note structuring require an internet connection.',
+      },
+    ],
+  },
+];
+---
+
+<Base
+  title="faq — fiddlehead"
+  description="frequently asked questions about fiddlehead — the macOS meeting notes app with local storage, speaker diarization, and ai-agent ready output."
+>
+  <nav class="page-nav">
+    <div class="page-nav-inner">
+      <a href="/" class="page-nav-logo" aria-label="Back to home">
+        <img src="/images/frog-icon.svg" alt="" width="28" height="21" />
+        <span class="page-nav-name">fiddlehead</span>
+      </a>
+    </div>
+  </nav>
+
+  <main>
+    <section class="faq-hero">
+      <div class="faq-hero-content hero-enter hero-enter-1">
+        <h1 class="heading-lg">frequently asked questions</h1>
+      </div>
+    </section>
+
+    {sections.map((section, i) => (
+      <section class="faq-section">
+        <h2 class:list={['heading-md', 'faq-category', 'reveal', i > 0 && `reveal-delay-${Math.min(i, 3)}`]}>{section.heading}</h2>
+        <div class:list={['faq-grid', 'reveal', i > 0 && `reveal-delay-${Math.min(i, 3)}`]}>
+          {section.faqs.map(faq => (
+            <div class="faq-item">
+              <h3 class="faq-q">{faq.q}</h3>
+              <p class="faq-a">{faq.a}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+    ))}
+  </main>
+
+  <Footer />
+</Base>
+
+<style>
+  /* nav */
+  .page-nav {
+    border-bottom: 1px solid var(--border);
+    padding: 0 var(--space-xl);
+  }
+  .page-nav-inner {
+    max-width: 1080px;
+    margin: 0 auto;
+    height: 52px;
+    display: flex;
+    align-items: center;
+  }
+  .page-nav-logo {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    color: var(--text-primary);
+  }
+  .page-nav-logo:hover {
+    color: var(--accent);
+  }
+  .page-nav-name {
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  /* hero */
+  .faq-hero {
+    padding: var(--space-3xl) var(--space-xl) var(--space-2xl);
+    text-align: center;
+  }
+  .faq-hero-content {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  /* sections */
+  .faq-section {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 0 var(--space-xl) var(--space-3xl);
+  }
+  .faq-category {
+    margin-bottom: var(--space-xl);
+    color: var(--accent);
+  }
+  .faq-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+  }
+  .faq-item {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: var(--space-lg);
+  }
+  .faq-item:last-child {
+    border-bottom: none;
+  }
+  .faq-q {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: var(--space-sm);
+  }
+  .faq-a {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  /* responsive */
+  @media (max-width: 640px) {
+    .faq-hero {
+      padding: var(--space-2xl) var(--space-lg) var(--space-xl);
+    }
+    .faq-section {
+      padding: 0 var(--space-lg) var(--space-2xl);
+    }
+  }
+</style>
