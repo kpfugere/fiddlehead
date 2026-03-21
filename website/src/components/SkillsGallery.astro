@@ -1,6 +1,10 @@
 ---
 import SkillCard from './SkillCard.astro';
 import skills from '../data/skills.json';
+
+const visibleCount = 5;
+const initialSkills = skills.slice(0, visibleCount);
+const moreSkills = skills.slice(visibleCount);
 ---
 
 <section id="skills" class="section">
@@ -13,7 +17,7 @@ import skills from '../data/skills.json';
   </div>
 
   <div class="skills-grid">
-    {skills.map((skill, i) => (
+    {initialSkills.map((skill, i) => (
       <div class={`reveal reveal-delay-${Math.min(i + 1, 5)}`}>
         <SkillCard
           icon={skill.icon}
@@ -34,7 +38,45 @@ import skills from '../data/skills.json';
       </div>
     </div>
   </div>
+
+  {moreSkills.length > 0 && (
+    <div class="skills-more">
+      <button class="skills-toggle" id="skills-toggle" aria-expanded="false">
+        <span class="skills-toggle-text">see all {skills.length} skills</span>
+        <span class="skills-toggle-arrow">&#9662;</span>
+      </button>
+      <div class="skills-grid skills-hidden" id="skills-hidden-grid">
+        {moreSkills.map((skill, i) => (
+          <div>
+            <SkillCard
+              icon={skill.icon}
+              name={skill.name}
+              description={skill.description}
+              file={skill.file}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  )}
 </section>
+
+<script>
+  const toggle = document.getElementById('skills-toggle');
+  const grid = document.getElementById('skills-hidden-grid');
+  if (toggle && grid) {
+    toggle.addEventListener('click', () => {
+      const expanded = toggle.getAttribute('aria-expanded') === 'true';
+      toggle.setAttribute('aria-expanded', String(!expanded));
+      grid.classList.toggle('skills-hidden');
+      const text = toggle.querySelector('.skills-toggle-text');
+      const arrow = toggle.querySelector('.skills-toggle-arrow');
+      if (text) text.textContent = expanded ? `see all ${toggle.dataset.total} skills` : 'show fewer';
+      if (arrow) arrow.innerHTML = expanded ? '&#9662;' : '&#9652;';
+    });
+    toggle.dataset.total = toggle.querySelector('.skills-toggle-text')?.textContent?.match(/\d+/)?.[0] || '';
+  }
+</script>
 
 <style>
   .skills-header {
@@ -64,6 +106,39 @@ import skills from '../data/skills.json';
   }
   .skill-cta:hover .skill-icon {
     color: var(--accent);
+  }
+
+  .skills-more {
+    margin-top: var(--space-xl);
+    text-align: center;
+  }
+
+  .skills-toggle {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 24px;
+    color: var(--text-secondary);
+    font-size: 15px;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: var(--space-xl);
+  }
+  .skills-toggle:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .skills-toggle-arrow {
+    font-size: 12px;
+    transition: transform 0.2s;
+  }
+
+  .skills-hidden {
+    display: none !important;
   }
 
   @media (max-width: 768px) {

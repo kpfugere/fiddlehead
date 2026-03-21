@@ -33,5 +33,40 @@
     "name": "weekly summary",
     "description": "aggregates a week of meetings into a single digest with themes and open items.",
     "file": "/skills/weekly-summary.md"
+  },
+  {
+    "slug": "stakeholder-update",
+    "icon": "◇",
+    "name": "stakeholder update",
+    "description": "generates a polished status update for leadership or investors from recent meetings.",
+    "file": "/skills/stakeholder-update.md"
+  },
+  {
+    "slug": "accountability-tracker",
+    "icon": "◎",
+    "name": "accountability tracker",
+    "description": "tracks who committed to what across meetings and flags overdue items.",
+    "file": "/skills/accountability-tracker.md"
+  },
+  {
+    "slug": "topic-tracker",
+    "icon": "◫",
+    "name": "topic tracker",
+    "description": "traces how a specific topic evolved across meetings over time.",
+    "file": "/skills/topic-tracker.md"
+  },
+  {
+    "slug": "meeting-debrief",
+    "icon": "◌",
+    "name": "meeting debrief",
+    "description": "structured post-mortem with conversation dynamics, signals, and suggested follow-ups.",
+    "file": "/skills/meeting-debrief.md"
+  },
+  {
+    "slug": "meeting-roi",
+    "icon": "◆",
+    "name": "meeting roi analyzer",
+    "description": "scores your meetings by outcomes produced and identifies time sinks.",
+    "file": "/skills/meeting-roi.md"
   }
 ]
