@@ -68,5 +68,12 @@
     "name": "meeting roi analyzer",
     "description": "scores your meetings by outcomes produced and identifies time sinks.",
     "file": "/skills/meeting-roi.md"
+  },
+  {
+    "slug": "personal-360",
+    "icon": "◐",
+    "name": "personal 360",
+    "description": "analyzes your communication patterns across meetings to surface strengths, blind spots, and growth areas.",
+    "file": "/skills/personal-360.md"
   }
 ]
