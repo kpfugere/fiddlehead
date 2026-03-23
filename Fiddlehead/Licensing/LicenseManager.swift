@@ -15,7 +15,7 @@ final class LicenseManager: ObservableObject {
     static let shared = LicenseManager()
     static let freeRecordingLimit = 10
 
-    static let checkoutURL = URL(string: "https://store.fiddleheadai.com/checkout/buy/18ff7027-7060-4a0d-9fc3-099c2df5230c")!
+    static let checkoutURL = URL(string: "https://store.fiddleheadai.com/checkout/buy/4ae66f43-6405-40da-8ea3-dd926d85f3ec")!
 
     @AppStorage("totalRecordingCount") var totalRecordingCount: Int = 0
     @AppStorage("licenseStatus") private var licenseStatusRaw: String = LicenseStatus.free.rawValue

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.2.5] - 2026-03-23
+### Fixed
+- Checkout page opening in LemonSqueezy test mode instead of live mode
+
 ## [0.2.4] - 2026-03-20
 ### Fixed
 - Auto mode recordings not counting toward free tier usage — recordings used counter in Settings now updates correctly for auto mode, and the free tier limit is properly enforced
