@@ -6,8 +6,8 @@ interface Props {
 }
 
 const {
-  title = 'fiddlehead — meeting notes for ai agents',
-  description = 'transcribe meetings with openai or assemblyai, structure with gpt-4o-mini. local markdown files your ai agents can actually use.',
+  title = 'fiddlehead — private ai meeting notes for macos',
+  description = 'local-first ai meeting note taker for macos. transcribe meetings with speaker diarization, get structured markdown notes on your machine. private, no subscription, ai-agent ready. a granola alternative.',
   ogImage = '/images/og-image.png',
 } = Astro.props;
 ---
@@ -54,10 +54,30 @@ const {
       "@context": "https://schema.org",
       "@type": "SoftwareApplication",
       "name": "Fiddlehead",
+      "alternateName": ["Fiddlehead AI", "Fiddlehead Meeting Notes"],
       "operatingSystem": "macOS 14+",
       "applicationCategory": "ProductivityApplication",
-      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "applicationSubCategory": "Meeting Transcription Software",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD",
+        "description": "Free tier with 10 recordings. One-time $29 for unlimited.",
+      },
       "description": description,
+      "featureList": [
+        "AI meeting transcription",
+        "Speaker diarization with real names",
+        "Local-first — notes saved on your Mac",
+        "Structured markdown with YAML frontmatter",
+        "AI-agent ready output",
+        "No meeting bot required",
+        "Auto mode with voice activity detection",
+        "Calendar-aware recording",
+        "OpenAI and AssemblyAI transcription providers",
+        "One-time $29 payment, no subscription",
+      ],
+      "keywords": "ai meeting transcription, meeting note taker, granola alternative, local meeting notes, private meeting notes, macos meeting app, speaker diarization, ai note taker for mac",
     })} />
   </head>
   <body>

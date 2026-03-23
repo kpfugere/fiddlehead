@@ -7,134 +7,87 @@ const features = [
     label: 'Pricing',
     fiddlehead: '$29 one-time',
     granola: '$18/mo',
-    otter: '$8–17/mo',
-    fireflies: '$10–18/mo',
   },
   {
     label: 'Subscription required',
     fiddlehead: 'No',
     granola: 'Yes',
-    otter: 'Yes',
-    fireflies: 'Yes',
     fiddleheadWin: true,
   },
   {
     label: 'Meeting bot joins call',
     fiddlehead: 'No',
     granola: 'No',
-    otter: 'Yes',
-    fireflies: 'Yes',
-    fiddleheadWin: true,
   },
   {
     label: 'Speaker diarization',
     fiddlehead: 'Named speakers',
     granola: 'No',
-    otter: 'Business+ only',
-    fireflies: 'Yes',
     fiddleheadWin: true,
   },
   {
     label: 'Output format',
     fiddlehead: 'Markdown + YAML',
     granola: 'Proprietary',
-    otter: 'Proprietary',
-    fireflies: 'Proprietary',
     fiddleheadWin: true,
   },
   {
     label: 'Data storage',
     fiddlehead: 'Local (your Mac)',
     granola: 'Cloud',
-    otter: 'Cloud',
-    fireflies: 'Cloud',
     fiddleheadWin: true,
   },
   {
     label: 'AI-agent ready',
     fiddlehead: 'Yes (YAML frontmatter)',
     granola: 'MCP only',
-    otter: 'No',
-    fireflies: 'No',
     fiddleheadWin: true,
   },
   {
     label: 'Platform',
     fiddlehead: 'macOS',
     granola: 'macOS, Windows, Web',
-    otter: 'Web, iOS, Android',
-    fireflies: 'Web, iOS, Android',
   },
   {
     label: 'File ownership',
     fiddlehead: 'Plain .md files',
     granola: 'Cloud-locked',
-    otter: 'Cloud-locked',
-    fireflies: 'Cloud-locked',
     fiddleheadWin: true,
   },
   {
     label: 'Free tier',
     fiddlehead: '10 recordings',
     granola: '25 meetings',
-    otter: '300 min/mo',
-    fireflies: '800 min storage',
-  },
-  {
-    label: 'Language support',
-    fiddlehead: 'English',
-    granola: '10+',
-    otter: '3 languages',
-    fireflies: '100+',
   },
 ];
 
-const switchReasons = [
+const differences = [
   {
-    title: 'you want to own your meeting notes',
-    desc: 'fiddlehead saves plain markdown files on your mac. no cloud lock-in, no export button needed — they\'re already yours.',
+    title: 'speaker diarization',
+    desc: 'fiddlehead identifies every speaker by name. granola doesn\'t do speaker diarization at all — you get "Me" and "Them" at best.',
   },
   {
-    title: 'you\'re tired of paying monthly',
-    desc: '$29 once instead of $216+/year for granola or $96–204/year for otter. no subscription, no renewal.',
+    title: 'local markdown files',
+    desc: 'notes are saved as plain .md files on your mac. no cloud lock-in, no export button, no proprietary format.',
   },
   {
-    title: 'you use ai agents',
-    desc: 'structured yaml frontmatter means claude, cursor, or any ai agent can read and query your meeting history directly.',
+    title: '$29 once, not $18/month',
+    desc: 'one payment, unlimited recordings forever. granola costs $216/year and requires an active subscription to keep using.',
   },
   {
-    title: 'you care about privacy',
-    desc: 'audio is transcribed and discarded. notes never leave your mac. no account required, no data on our servers.',
+    title: 'ai-agent ready',
+    desc: 'yaml frontmatter with date, speakers, topics, and tags. your ai agents can query meeting notes directly from the filesystem.',
   },
   {
-    title: 'you need speaker names',
-    desc: 'fiddlehead uses speaker diarization with real names in every transcript. granola doesn\'t identify speakers at all.',
-  },
-];
-
-const differentiators = [
-  {
-    title: 'no subscription',
-    desc: '$29 once vs $216+/year for competitors. you own the license forever, including all future updates.',
-  },
-  {
-    title: 'your files, your machine',
-    desc: 'plain markdown files saved locally. no export button because there\'s nothing to export — they\'re already files on your mac.',
-  },
-  {
-    title: 'ai-agent native',
-    desc: 'structured YAML frontmatter with date, speakers, topics, and tags. your AI agents can query meeting notes directly.',
-  },
-  {
-    title: 'named speakers',
-    desc: 'real names in every transcript — not "Me" and "Them." granola doesn\'t even do speaker diarization.',
+    title: 'no account required',
+    desc: 'download, add your api keys, and start recording. no sign-up, no account, no data on our servers.',
   },
 ];
 ---
 
 <Base
-  title="fiddlehead vs granola — private ai meeting transcription alternative"
-  description="compare fiddlehead to granola, otter.ai, and fireflies. a private, local-first meeting note taker with ai meeting transcription, no subscription, and ai-agent ready markdown output."
+  title="granola alternative — fiddlehead, private ai meeting notes for macos"
+  description="looking for a granola alternative? fiddlehead is a private, local-first meeting note taker for macos. ai meeting transcription, speaker diarization, $29 one-time — no subscription."
 >
   <nav class="page-nav">
     <div class="page-nav-inner">
@@ -146,31 +99,30 @@ const differentiators = [
   </nav>
 
   <main>
-    <section class="compare-hero">
-      <div class="compare-hero-content hero-enter hero-enter-1">
-        <h1 class="heading-lg">fiddlehead vs granola, otter, and fireflies</h1>
-        <p class="subhead compare-sub">
-          a local-first, private alternative to cloud meeting note takers. no subscription, no meeting bot, ai-agent ready.
+    <section class="alt-hero">
+      <div class="alt-hero-content hero-enter hero-enter-1">
+        <h1 class="heading-lg">a local-first granola alternative</h1>
+        <p class="subhead alt-sub">
+          private ai meeting transcription with speaker diarization, markdown output, and no subscription.
         </p>
       </div>
     </section>
 
-    <section class="compare-intro">
-      <p class="compare-intro-text hero-enter hero-enter-2">
-        fiddlehead is a local-first ai meeting note taker for macos and a privacy-focused alternative to granola. it records meeting audio, transcribes with speaker diarization, and saves structured markdown notes on your mac — not in the cloud. if you're looking for an ai meeting transcription app that doesn't require a subscription, a meeting bot, or an account, here's how fiddlehead compares.
+    <section class="alt-intro">
+      <p class="alt-intro-text hero-enter hero-enter-2">
+        fiddlehead is a granola alternative that keeps your meeting notes on your mac as plain markdown files. like granola, it captures meeting audio without a bot joining the call. unlike granola, fiddlehead identifies speakers by name, saves structured notes locally instead of in the cloud, and costs $29 once — no subscription. it's a private meeting note taker built for people who want to own their data and use it with ai agents.
       </p>
     </section>
 
-    <section class="compare-table-section">
-      <div class="table-scroll hero-enter hero-enter-2">
-        <table class="compare-table">
+    <section class="alt-table-section">
+      <h2 class="heading-md reveal">fiddlehead vs granola</h2>
+      <div class="table-scroll reveal reveal-delay-1">
+        <table class="alt-table">
           <thead>
             <tr>
               <th class="col-feature"></th>
               <th class="col-fiddlehead">fiddlehead</th>
               <th class="col-competitor">granola</th>
-              <th class="col-competitor">otter.ai</th>
-              <th class="col-competitor">fireflies</th>
             </tr>
           </thead>
           <tbody>
@@ -179,8 +131,6 @@ const differentiators = [
                 <td class="col-feature">{f.label}</td>
                 <td class:list={['col-fiddlehead', { 'cell-win': f.fiddleheadWin }]}>{f.fiddlehead}</td>
                 <td class="col-competitor">{f.granola}</td>
-                <td class="col-competitor">{f.otter}</td>
-                <td class="col-competitor">{f.fireflies}</td>
               </tr>
             ))}
           </tbody>
@@ -188,10 +138,10 @@ const differentiators = [
       </div>
     </section>
 
-    <section class="compare-diff">
-      <h2 class="heading-md reveal">why fiddlehead</h2>
+    <section class="alt-diff">
+      <h2 class="heading-md reveal">key differences</h2>
       <div class="diff-grid reveal reveal-delay-1">
-        {differentiators.map(d => (
+        {differences.map(d => (
           <div class="diff-card">
             <span class="glyph glyph-saved">✓</span>
             <div>
@@ -203,24 +153,10 @@ const differentiators = [
       </div>
     </section>
 
-    <section class="compare-switch">
-      <h2 class="heading-md reveal">choose fiddlehead if</h2>
-      <div class="diff-grid reveal reveal-delay-1">
-        {switchReasons.map(r => (
-          <div class="diff-card">
-            <span class="glyph glyph-saved">→</span>
-            <div>
-              <strong class="diff-title">{r.title}</strong>
-              <p class="diff-desc">{r.desc}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-    </section>
-
-    <section class="compare-cta reveal">
-      <a href="/" class="btn-primary">download for macos</a>
+    <section class="alt-cta reveal">
+      <a href="/download" class="btn-primary">download for macos</a>
       <p class="cta-note">free — 10 recordings included, no account required.</p>
+      <p class="cta-link"><a href="/compare/">see full comparison with otter and fireflies →</a></p>
     </section>
   </main>
 
@@ -255,39 +191,43 @@ const differentiators = [
   }
 
   /* hero */
-  .compare-hero {
+  .alt-hero {
     padding: var(--space-3xl) var(--space-xl) var(--space-2xl);
     text-align: center;
     display: flex;
     justify-content: center;
   }
-  .compare-hero-content {
+  .alt-hero-content {
     max-width: 640px;
   }
-  .compare-sub {
+  .alt-sub {
     margin-top: var(--space-lg);
     margin-left: auto;
     margin-right: auto;
   }
 
   /* intro */
-  .compare-intro {
+  .alt-intro {
     max-width: 720px;
     margin: 0 auto;
     padding: 0 var(--space-xl) var(--space-2xl);
     text-align: center;
   }
-  .compare-intro-text {
+  .alt-intro-text {
     font-size: 15px;
     color: var(--text-secondary);
     line-height: 1.7;
   }
 
   /* table */
-  .compare-table-section {
-    max-width: 1080px;
+  .alt-table-section {
+    max-width: 720px;
     margin: 0 auto;
     padding: 0 var(--space-xl) var(--space-3xl);
+  }
+  .alt-table-section .heading-md {
+    text-align: center;
+    margin-bottom: var(--space-xl);
   }
   .table-scroll {
     overflow-x: auto;
@@ -295,23 +235,22 @@ const differentiators = [
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
   }
-  .compare-table {
+  .alt-table {
     width: 100%;
     border-collapse: collapse;
     font-size: 14px;
-    min-width: 820px;
   }
-  .compare-table thead {
+  .alt-table thead {
     border-bottom: 1px solid var(--border);
   }
-  .compare-table th {
+  .alt-table th {
     padding: 12px 16px;
     font-size: 12px;
     font-weight: 500;
     text-align: left;
     letter-spacing: 0.04em;
   }
-  .compare-table td {
+  .alt-table td {
     padding: 10px 16px;
     border-top: 1px solid var(--border);
     line-height: 1.5;
@@ -339,13 +278,13 @@ const differentiators = [
     font-weight: 500;
   }
 
-  /* differentiators */
-  .compare-diff {
+  /* differences */
+  .alt-diff {
     max-width: 820px;
     margin: 0 auto;
     padding: 0 var(--space-xl) var(--space-3xl);
   }
-  .compare-diff .heading-md {
+  .alt-diff .heading-md {
     text-align: center;
     margin-bottom: var(--space-xl);
   }
@@ -380,19 +319,8 @@ const differentiators = [
     line-height: 1.65;
   }
 
-  /* switch */
-  .compare-switch {
-    max-width: 820px;
-    margin: 0 auto;
-    padding: 0 var(--space-xl) var(--space-3xl);
-  }
-  .compare-switch .heading-md {
-    text-align: center;
-    margin-bottom: var(--space-xl);
-  }
-
   /* cta */
-  .compare-cta {
+  .alt-cta {
     text-align: center;
     padding: 0 var(--space-xl) var(--space-3xl);
   }
@@ -400,6 +328,16 @@ const differentiators = [
     margin-top: var(--space-md);
     font-size: 13px;
     color: var(--text-secondary);
+  }
+  .cta-link {
+    margin-top: var(--space-lg);
+    font-size: 14px;
+  }
+  .cta-link a {
+    color: var(--accent);
+  }
+  .cta-link a:hover {
+    text-decoration: underline;
   }
 
   /* responsive */
@@ -409,16 +347,19 @@ const differentiators = [
     }
   }
   @media (max-width: 640px) {
-    .compare-hero {
+    .alt-hero {
       padding: var(--space-2xl) var(--space-lg) var(--space-xl);
     }
-    .compare-table-section {
+    .alt-intro {
+      padding: 0 var(--space-lg) var(--space-xl);
+    }
+    .alt-table-section {
       padding: 0 var(--space-lg) var(--space-2xl);
     }
-    .compare-diff {
+    .alt-diff {
       padding: 0 var(--space-lg) var(--space-2xl);
     }
-    .compare-cta {
+    .alt-cta {
       padding: 0 var(--space-lg) var(--space-2xl);
     }
   }
