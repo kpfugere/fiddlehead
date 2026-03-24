@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.2.6] - 2026-03-24
+### Fixed
+- Checkout page intermittently returning 404 errors — switched from custom domain to default LemonSqueezy domain for reliable checkout
+- Website pricing page pointing to test mode checkout URL instead of live checkout
+
 ## [0.2.5] - 2026-03-23
 ### Fixed
 - Checkout page opening in LemonSqueezy test mode instead of live mode

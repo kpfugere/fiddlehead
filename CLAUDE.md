@@ -32,6 +32,11 @@ When making changes to this project, follow these versioning practices:
 - Keep it concise — the README is for someone seeing the project for the first time.
 - Do NOT update the README for internal refactors, bug fixes, or minor tweaks that don't change the feature set.
 
+## Email (Resend API)
+- The Resend API key is stored in `.env` as `RESEND_API_KEY`.
+- **Before sending any email**, always show the full draft (from, to, subject, body) and ask for explicit approval before executing the API call.
+- Default sending address: `kyle@fiddleheadai.com`
+
 ### What NOT to Do
 - Never modify `MARKETING_VERSION` or `CURRENT_PROJECT_VERSION` outside of an explicit release/version bump request.
 - Never create a git tag without also updating project.yml and CHANGELOG.md.
