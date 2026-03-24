@@ -78,5 +78,17 @@
         sparkle:edSignature="MozDyypffN/N0Edr1cnuXsnsQsbtKGlkiCGX+1bwSfZwF3JATCVq+MOvY5gouu/JnNZH905M+Hf1x5aaNMnbBw==" length="2259798"
         type="application/octet-stream" />
     </item>
+      <item>
+      <title>Version 0.2.6</title>
+      <pubDate>Tue, 24 Mar 2026 21:30:03 +0000</pubDate>
+      <sparkle:version>8</sparkle:version>
+      <sparkle:shortVersionString>0.2.6</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[]]></description>
+      <enclosure
+        url="https://pub-773127d3d8574b5e986b5c6aedfe32f1.r2.dev/releases/Fiddlehead-0.2.6.dmg"
+        sparkle:edSignature="6A7UpdrYX7Uvq2vPy0DQecZv67BIupVagPH/9dk19gqvXQNULb9nWrfremOWuPYBPUNtT1PlM21lqFkWqxWNBQ==" length="2262552"
+        type="application/octet-stream" />
+    </item>
   </channel>
 </rss>
