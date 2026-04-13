@@ -38,16 +38,5 @@
 	<string>jkt/pj2qcrd9mRQUiI4ZpZN5Vu6gL2HAWNPz/ue3OmM=</string>
 	<key>SUEnableAutomaticChecks</key>
 	<true/>
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleURLName</key>
-			<string>com.kylefugere.Fiddlehead</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>fiddlehead</string>
-			</array>
-		</dict>
-	</array>
 </dict>
 </plist>

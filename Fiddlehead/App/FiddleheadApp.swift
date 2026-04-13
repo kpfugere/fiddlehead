@@ -9,7 +9,6 @@ struct FiddleheadApp: App {
     @StateObject private var settings = AppSettings()
     @StateObject private var autoMode = AutoModeController()
     @StateObject private var coordinator = AppCoordinator()
-    @StateObject private var licenseManager = LicenseManager.shared
     @StateObject private var updateController = UpdateController()
 
     private let onboardingController = OnboardingWindowController()
@@ -26,7 +25,6 @@ struct FiddleheadApp: App {
                 .environmentObject(pipeline)
                 .environmentObject(settings)
                 .environmentObject(autoMode)
-                .environmentObject(licenseManager)
                 .environmentObject(updateController)
                 .onAppear {
                     settings.migrateFromKeychainIfNeeded()
@@ -35,16 +33,7 @@ struct FiddleheadApp: App {
                     appDelegate.registerHotkey(pipeline: pipeline, autoMode: autoMode)
                     onboardingController.showIfNeeded(settings: settings)
                     coordinator.setup(pipeline: pipeline, autoMode: autoMode, settings: settings)
-                    licenseManager.validateOnLaunch()
                     updateController.startIfNeeded()
-                }
-                .onOpenURL { url in
-                    guard url.scheme == "fiddlehead",
-                          url.host == "activate",
-                          let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
-                          let key = components.queryItems?.first(where: { $0.name == "license_key" })?.value
-                    else { return }
-                    Task { await licenseManager.activateLicense(key) }
                 }
         } label: {
             MenuBarLabel(

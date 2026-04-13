@@ -2,7 +2,6 @@ import SwiftUI
 
 struct SettingsView: View {
     @EnvironmentObject var settings: AppSettings
-    @EnvironmentObject var licenseManager: LicenseManager
     @State private var openAIKey = ""
     @State private var showOpenAIKey = false
     @State private var assemblyAIKey = ""
@@ -10,8 +9,6 @@ struct SettingsView: View {
     @State private var hasScreenRecordingPermission = false
     @State private var openAIEdited = false
     @State private var assemblyAIEdited = false
-    @State private var licenseKey = ""
-    @State private var showLicenseKeyEntry = false
 
     var body: some View {
         ScrollView {
@@ -229,88 +226,6 @@ struct SettingsView: View {
                         Text("used to label your mic channel in transcripts.")
                             .font(FiddleheadTheme.mono(10))
                             .foregroundStyle(FiddleheadTheme.textSecondary)
-                    }
-                }
-
-                // MARK: - License
-                settingsSection("license") {
-                    VStack(alignment: .leading, spacing: 8) {
-                        HStack {
-                            Text("status")
-                                .font(FiddleheadTheme.mono(12, weight: .medium))
-                                .foregroundStyle(FiddleheadTheme.textPrimary)
-
-                            Spacer()
-
-                            Text(licenseManager.isLicensed ? "licensed" : "free")
-                                .font(FiddleheadTheme.mono(12))
-                                .foregroundStyle(licenseManager.isLicensed ? FiddleheadTheme.saved : FiddleheadTheme.textSecondary)
-                        }
-
-                        if !licenseManager.isLicensed {
-                            HStack {
-                                Text("recordings used")
-                                    .font(FiddleheadTheme.mono(12))
-                                    .foregroundStyle(FiddleheadTheme.textPrimary)
-
-                                Spacer()
-
-                                Text("\(licenseManager.totalRecordingCount) / \(LicenseManager.freeRecordingLimit)")
-                                    .font(FiddleheadTheme.monoFixed(12))
-                                    .foregroundStyle(
-                                        licenseManager.canRecord
-                                            ? FiddleheadTheme.textSecondary
-                                            : FiddleheadTheme.recording
-                                    )
-                            }
-
-                            Button(action: { licenseManager.openCheckout() }) {
-                                Text("unlock fiddlehead — $29")
-                                    .font(FiddleheadTheme.mono(12, weight: .medium))
-                                    .foregroundStyle(FiddleheadTheme.background)
-                                    .frame(maxWidth: .infinity)
-                                    .padding(.vertical, 8)
-                                    .background(FiddleheadTheme.accent)
-                                    .clipShape(RoundedRectangle(cornerRadius: FiddleheadTheme.cornerRadius))
-                            }
-                            .buttonStyle(.plain)
-
-                            if showLicenseKeyEntry {
-                                HStack(spacing: 8) {
-                                    TextField("license key", text: $licenseKey)
-                                        .textFieldStyle(.roundedBorder)
-                                        .font(FiddleheadTheme.monoFixed(11))
-                                        .onSubmit {
-                                            guard !licenseKey.isEmpty else { return }
-                                            Task { await licenseManager.activateLicense(licenseKey) }
-                                        }
-
-                                    if licenseManager.isActivating {
-                                        ProgressView()
-                                            .controlSize(.small)
-                                    } else {
-                                        Button("activate") {
-                                            Task { await licenseManager.activateLicense(licenseKey) }
-                                        }
-                                        .font(FiddleheadTheme.mono(11))
-                                        .disabled(licenseKey.isEmpty)
-                                    }
-                                }
-
-                                if let error = licenseManager.activationError {
-                                    Text(error)
-                                        .font(FiddleheadTheme.mono(10))
-                                        .foregroundStyle(FiddleheadTheme.recording)
-                                }
-                            } else {
-                                Button("i have a license key") {
-                                    showLicenseKeyEntry = true
-                                }
-                                .font(FiddleheadTheme.mono(11))
-                                .foregroundStyle(FiddleheadTheme.accent)
-                                .buttonStyle(.plain)
-                            }
-                        }
                     }
                 }
 

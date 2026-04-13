@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
+### Changed
+- Fiddlehead is now free and open source under the MIT license.
+
+### Removed
+- License key activation, paywall, and 10-recording free tier — all recording is now unlimited.
+- `fiddlehead://activate` URL scheme (was used only for post-checkout license activation).
 
 ## [0.2.6] - 2026-03-24
 ### Fixed

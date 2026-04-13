@@ -92,11 +92,6 @@ final class AutoModeController: ObservableObject {
         guard case .listening = state else { return }
         guard let settings else { return }
 
-        guard LicenseManager.shared.canRecord else {
-            logger.info("Free tier limit reached — skipping auto recording")
-            return
-        }
-
         logger.info("Voice detected — starting auto recording")
 
         settings.ensureSaveLocationExists()
@@ -422,7 +417,6 @@ final class AutoModeController: ObservableObject {
             }
 
             logger.info("Auto note saved (single topic): \(result.title ?? "untitled")")
-            LicenseManager.shared.incrementRecordingCount()
             return
         }
 
@@ -501,7 +495,6 @@ final class AutoModeController: ObservableObject {
         )
 
         logger.info("Auto session note saved (\(topicResults.count) topics): \(sessionTitle)")
-        LicenseManager.shared.incrementRecordingCount()
     }
 
     // MARK: - Calendar-Aware Meeting Splitting (Auto Mode)
@@ -585,7 +578,6 @@ final class AutoModeController: ObservableObject {
             }
 
             logger.info("Auto meeting note saved: \(title ?? segment.meeting.title)")
-            LicenseManager.shared.incrementRecordingCount()
         }
     }
 

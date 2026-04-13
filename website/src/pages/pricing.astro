@@ -2,7 +2,7 @@
 import Base from '../layouts/Base.astro';
 import Footer from '../components/Footer.astro';
 
-const checkoutUrl = 'https://fiddlehead.lemonsqueezy.com/checkout/buy/4ae66f43-6405-40da-8ea3-dd926d85f3ec';
+const githubUrl = 'https://github.com/kpfugere/Fiddlehead';
 
 const features = [
   'mic + system audio capture',
@@ -11,35 +11,33 @@ const features = [
   'auto mode (voice activity detection)',
   'calendar-aware recording',
   'local files — no cloud lock-in',
+  'unlimited recordings',
+  'bring your own openai / assemblyai key',
 ];
 
 const faqs = [
   {
-    q: 'is there a subscription?',
-    a: 'no. it\'s a one-time payment. you own the license forever, including all future updates.',
+    q: 'is it really free?',
+    a: 'yes. fiddlehead is open source under the mit license. the only cost is your own openai or assemblyai api usage, which you pay directly to them.',
   },
   {
-    q: 'what happens after 10 recordings?',
-    a: 'fiddlehead will prompt you to unlock with a license key. your existing notes are always accessible — you just can\'t create new recordings until you upgrade.',
-  },
-  {
-    q: 'how do i activate my license?',
-    a: 'after purchasing, you\'ll receive a license key via email. enter it in fiddlehead\'s settings or use the activation prompt. it takes about 5 seconds.',
+    q: 'where is the source code?',
+    a: 'github.com/kpfugere/fiddlehead. pull requests welcome.',
   },
   {
     q: 'can i use it on multiple macs?',
-    a: 'yes — each license supports up to 3 machines. perfect for a work laptop, personal mac, and a desktop.',
+    a: 'yes — no license, no device limits. run it wherever you want.',
   },
   {
-    q: 'what about refunds?',
-    a: 'if fiddlehead doesn\'t work for you, reach out within 14 days for a full refund. no questions asked.',
+    q: 'why was this open-sourced?',
+    a: 'shipping it for free to as many people as possible felt like more impact than chasing a small one-time-payment business.',
   },
 ];
 ---
 
 <Base
   title="pricing — fiddlehead"
-  description="unlock unlimited meeting transcriptions with fiddlehead. $29 one-time payment, no subscription."
+  description="fiddlehead is free and open source. mit licensed meeting note taker for macos."
 >
   <nav class="pricing-nav">
     <div class="pricing-nav-inner">
@@ -53,41 +51,26 @@ const faqs = [
   <main>
     <section class="pricing-hero">
       <div class="pricing-hero-content hero-enter hero-enter-1">
-        <h1 class="heading-lg">pay once, use forever.</h1>
+        <h1 class="heading-lg">free and open source.</h1>
         <p class="subhead pricing-sub">
-          start free. upgrade for $29 when you're ready — no subscription, ever.
+          no license, no paywall, no subscription. mit licensed — fork it, ship it, use it however you want.
         </p>
       </div>
     </section>
 
     <section class="pricing-flow">
-      <!-- step 1: free -->
-      <div class="flow-step flow-step-free hero-enter hero-enter-2">
-        <div class="flow-label">start free</div>
-        <p class="flow-headline">10 recordings included</p>
-        <p class="flow-desc">download and try everything — no account, no credit card.</p>
-        <a href="/" class="btn-secondary flow-cta">download</a>
-      </div>
-
-      <!-- connector -->
-      <div class="flow-connector hero-enter hero-enter-3">
-        <div class="flow-connector-line"></div>
-        <span class="flow-connector-label">then</span>
-        <div class="flow-connector-line"></div>
-      </div>
-
-      <!-- step 2: unlock -->
-      <div class="card flow-step flow-step-pro hero-enter hero-enter-3">
-        <div class="flow-badge">one-time payment</div>
-        <div class="flow-price">$29</div>
+      <div class="card flow-step flow-step-pro hero-enter hero-enter-2">
+        <div class="flow-badge">mit license</div>
+        <div class="flow-price">$0</div>
         <p class="flow-headline">unlimited recordings, forever.</p>
-        <p class="flow-desc">all future updates included. up to 3 macs per license.</p>
-        <a href={checkoutUrl} class="btn-primary flow-cta">buy fiddlehead</a>
+        <p class="flow-desc">bring your own openai or assemblyai api key. everything else is on the house.</p>
+        <a href="/" class="btn-primary flow-cta">download</a>
+        <a href={githubUrl} class="btn-secondary flow-cta flow-cta-secondary">view source on github</a>
       </div>
     </section>
 
     <section class="pricing-features reveal">
-      <h2 class="features-heading">everything included — free and pro</h2>
+      <h2 class="features-heading">what you get</h2>
       <ul class="feature-list">
         {features.map(f => (
           <li class="feature-item">
@@ -96,14 +79,6 @@ const faqs = [
           </li>
         ))}
       </ul>
-    </section>
-
-    <section class="pricing-reassurance reveal">
-      <span class="reassurance-item">14-day refund guarantee</span>
-      <span class="reassurance-dot">·</span>
-      <span class="reassurance-item">3 mac activations</span>
-      <span class="reassurance-dot">·</span>
-      <span class="reassurance-item">all future updates</span>
     </section>
 
     <section class="pricing-faq">
@@ -181,11 +156,6 @@ const faqs = [
     padding: var(--space-xl);
   }
 
-  .flow-step-free {
-    border: 1px solid var(--border-strong);
-    border-radius: var(--radius);
-  }
-
   .flow-step-pro {
     position: relative;
     border-color: var(--accent);
@@ -202,14 +172,6 @@ const faqs = [
     font-weight: 500;
     padding: 2px 10px;
     border-radius: var(--radius);
-  }
-
-  .flow-label {
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--text-secondary);
-    letter-spacing: 0.04em;
-    margin-bottom: var(--space-sm);
   }
 
   .flow-price {
@@ -240,26 +202,8 @@ const faqs = [
     justify-content: center;
   }
 
-  /* connector */
-  .flow-connector {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--space-sm);
-    padding: var(--space-lg) 0;
-  }
-
-  .flow-connector-line {
-    width: 1px;
-    height: 20px;
-    border-left: 1px dashed var(--border-strong);
-  }
-
-  .flow-connector-label {
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--text-secondary);
-    letter-spacing: 0.04em;
+  .flow-cta-secondary {
+    margin-top: var(--space-sm);
   }
 
   /* features */
@@ -299,26 +243,6 @@ const faqs = [
     text-align: center;
     font-size: 13px;
     color: var(--saved);
-  }
-
-  /* reassurance */
-  .pricing-reassurance {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: var(--space-md);
-    padding: 0 var(--space-xl) var(--space-3xl);
-    flex-wrap: wrap;
-  }
-
-  .reassurance-item {
-    font-size: 13px;
-    color: var(--text-secondary);
-  }
-
-  .reassurance-dot {
-    font-size: 13px;
-    color: var(--border-strong);
   }
 
   /* faq */
@@ -364,14 +288,6 @@ const faqs = [
     }
     .pricing-features {
       padding: 0 var(--space-lg) var(--space-2xl);
-    }
-    .pricing-reassurance {
-      padding: 0 var(--space-lg) var(--space-2xl);
-      flex-direction: column;
-      gap: var(--space-sm);
-    }
-    .reassurance-dot {
-      display: none;
     }
     .pricing-faq {
       padding: var(--space-2xl) var(--space-lg);

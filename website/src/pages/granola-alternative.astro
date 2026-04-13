@@ -5,8 +5,9 @@ import Footer from '../components/Footer.astro';
 const features = [
   {
     label: 'Pricing',
-    fiddlehead: '$29 one-time',
+    fiddlehead: 'Free / Open source',
     granola: '$18/mo',
+    fiddleheadWin: true,
   },
   {
     label: 'Subscription required',
@@ -56,8 +57,9 @@ const features = [
   },
   {
     label: 'Free tier',
-    fiddlehead: '10 recordings',
+    fiddlehead: 'Unlimited',
     granola: '25 meetings',
+    fiddleheadWin: true,
   },
 ];
 
@@ -71,8 +73,8 @@ const differences = [
     desc: 'notes are saved as plain .md files on your mac. no cloud lock-in, no export button, no proprietary format.',
   },
   {
-    title: '$29 once, not $18/month',
-    desc: 'one payment, unlimited recordings forever. granola costs $216/year and requires an active subscription to keep using.',
+    title: 'free and open source, not $18/month',
+    desc: 'mit licensed, unlimited recordings forever. granola costs $216/year and requires an active subscription to keep using.',
   },
   {
     title: 'ai-agent ready',
@@ -87,7 +89,7 @@ const differences = [
 
 <Base
   title="granola alternative — fiddlehead, private ai meeting notes for macos"
-  description="looking for a granola alternative? fiddlehead is a private, local-first meeting note taker for macos. ai meeting transcription, speaker diarization, $29 one-time — no subscription."
+  description="looking for a granola alternative? fiddlehead is a private, local-first meeting note taker for macos. ai meeting transcription, speaker diarization, free and open source — no subscription."
 >
   <nav class="page-nav">
     <div class="page-nav-inner">
@@ -110,7 +112,7 @@ const differences = [
 
     <section class="alt-intro">
       <p class="alt-intro-text hero-enter hero-enter-2">
-        fiddlehead is a granola alternative that keeps your meeting notes on your mac as plain markdown files. like granola, it captures meeting audio without a bot joining the call. unlike granola, fiddlehead identifies speakers by name, saves structured notes locally instead of in the cloud, and costs $29 once — no subscription. it's a private meeting note taker built for people who want to own their data and use it with ai agents.
+        fiddlehead is a granola alternative that keeps your meeting notes on your mac as plain markdown files. like granola, it captures meeting audio without a bot joining the call. unlike granola, fiddlehead identifies speakers by name, saves structured notes locally instead of in the cloud, and is free and open source (mit licensed) — no subscription, no vendor. it's a private meeting note taker built for people who want to own their data and use it with ai agents.
       </p>
     </section>
 
@@ -155,7 +157,7 @@ const differences = [
 
     <section class="alt-cta reveal">
       <a href="/download" class="btn-primary">download for macos</a>
-      <p class="cta-note">free — 10 recordings included, no account required.</p>
+      <p class="cta-note">free and open source — bring your own api key, no account required.</p>
       <p class="cta-link"><a href="/compare/">see full comparison with otter and fireflies →</a></p>
     </section>
   </main>

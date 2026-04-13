@@ -4,7 +4,6 @@ struct MenuBarView: View {
     @EnvironmentObject var pipeline: RecordingPipeline
     @EnvironmentObject var settings: AppSettings
     @EnvironmentObject var autoMode: AutoModeController
-    @EnvironmentObject var licenseManager: LicenseManager
     @EnvironmentObject var updateController: UpdateController
 
     var openSettingsAction: () -> Void
@@ -199,17 +198,6 @@ struct MenuBarView: View {
                 .clipShape(RoundedRectangle(cornerRadius: FiddleheadTheme.cornerRadius))
             }
             .buttonStyle(.plain)
-        } else if !licenseManager.canRecord {
-            Button(action: { licenseManager.openCheckout() }) {
-                Text("upgrade to record")
-                    .font(FiddleheadTheme.mono(14, weight: .medium))
-                    .foregroundStyle(FiddleheadTheme.background)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 10)
-                    .background(FiddleheadTheme.accent)
-                    .clipShape(RoundedRectangle(cornerRadius: FiddleheadTheme.cornerRadius))
-            }
-            .buttonStyle(.plain)
         } else {
             Button(action: { pipeline.toggleRecording() }) {
                 HStack(spacing: 8) {
@@ -225,12 +213,6 @@ struct MenuBarView: View {
                 .clipShape(RoundedRectangle(cornerRadius: FiddleheadTheme.cornerRadius))
             }
             .buttonStyle(.plain)
-
-            if !licenseManager.isLicensed {
-                Text("\(licenseManager.recordingsRemaining) of \(LicenseManager.freeRecordingLimit) free")
-                    .font(FiddleheadTheme.mono(10))
-                    .foregroundStyle(FiddleheadTheme.textSecondary)
-            }
         }
     }
 

@@ -5,10 +5,11 @@ import Footer from '../components/Footer.astro';
 const features = [
   {
     label: 'Pricing',
-    fiddlehead: '$29 one-time',
+    fiddlehead: 'Free / Open source',
     granola: '$18/mo',
     otter: '$8–17/mo',
     fireflies: '$10–18/mo',
+    fiddleheadWin: true,
   },
   {
     label: 'Subscription required',
@@ -75,10 +76,11 @@ const features = [
   },
   {
     label: 'Free tier',
-    fiddlehead: '10 recordings',
+    fiddlehead: 'Unlimited',
     granola: '25 meetings',
     otter: '300 min/mo',
     fireflies: '800 min storage',
+    fiddleheadWin: true,
   },
   {
     label: 'Language support',
@@ -96,7 +98,7 @@ const switchReasons = [
   },
   {
     title: 'you\'re tired of paying monthly',
-    desc: '$29 once instead of $216+/year for granola or $96–204/year for otter. no subscription, no renewal.',
+    desc: 'free and open source instead of $216+/year for granola or $96–204/year for otter. no subscription, no renewal, no vendor.',
   },
   {
     title: 'you use ai agents',
@@ -114,8 +116,8 @@ const switchReasons = [
 
 const differentiators = [
   {
-    title: 'no subscription',
-    desc: '$29 once vs $216+/year for competitors. you own the license forever, including all future updates.',
+    title: 'free and open source',
+    desc: 'mit licensed. no subscription, no license key, no vendor. fork it, ship it, run it forever.',
   },
   {
     title: 'your files, your machine',
@@ -220,7 +222,7 @@ const differentiators = [
 
     <section class="compare-cta reveal">
       <a href="/" class="btn-primary">download for macos</a>
-      <p class="cta-note">free — 10 recordings included, no account required.</p>
+      <p class="cta-note">free and open source — bring your own api key, no account required.</p>
     </section>
   </main>
 
