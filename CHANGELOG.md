@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
+
+## [0.3.1] - 2026-06-01
 ### Fixed
 - Auto mode not stopping after a meeting ends — silence detection now ignores ambient room noise (fans, typing, HVAC) picked up by the always-on microphone and, when capturing system audio, only treats the recording as silent once both your mic and the remote/meeting audio go quiet. Previously low-level mic noise could keep a finished meeting recording running until the max-duration limit.
 
